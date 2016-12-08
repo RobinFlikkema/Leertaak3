@@ -1,45 +1,15 @@
 package com.example.leertaakt_two;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
-import com.mysql.cj.jdbc.PreparedStatement;
-
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Main {
-    public static void main (String[] args)
+    public static void main(String[] args)
             throws IOException {
-        ServerSocket serversocket = new ServerSocket();
-        serversocket.bind(new InetSocketAddress("0.0.0.0", 7789));
-        Socket socket = serversocket.accept();
-        while(true) {
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println(oos.toString());
-        }
-
-
-
-//        MysqlDataSource dataSource = new MysqlDataSource();
-//        dataSource.setUser("leertaak2");
-//        dataSource.setPassword("Wyup&960");
-//        dataSource.setServerName("controlpanel.bennink.me");
-//
-//        try (Connection connection = dataSource.getConnection()){
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        ServerSocket serverSocket = new ServerSocket(7789);
+        new WeatherdataReceiver(serverSocket);
     }
 }
-
 
 
 //    public List<User> getUser(int userId) {
