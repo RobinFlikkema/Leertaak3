@@ -9,9 +9,9 @@ import java.sql.SQLException;
 public class Main {
     public static void main (String[] args){
             MysqlDataSource dataSource = new MysqlDataSource();
-            dataSource.setUser("scott");
-            dataSource.setPassword("tiger");
-            dataSource.setServerName("myDBHost.example.org");
+            dataSource.setUser("leertaak2");
+            dataSource.setPassword("Wyup&960");
+            dataSource.setServerName("controlpanel.bennink.me");
 
             try (Connection connection = dataSource.getConnection()){
 
