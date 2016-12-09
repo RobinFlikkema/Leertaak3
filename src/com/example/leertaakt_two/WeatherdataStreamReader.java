@@ -15,25 +15,31 @@ class WeatherdataStreamReader {
         this.bufferedReader = new BufferedReader(new InputStreamReader(input));
     }
 
-    void receiveWeatherdata() {
+    Boolean receiveWeatherdata() {
         System.out.println("receiveWeatherdata");
         try {
             int counter = 0;
+            Weatherdata weatherdata = new Weatherdata();
             while (true) {
                 String line = bufferedReader.readLine();
-                System.out.println(line);
-                //TODO: Split Measurements
-                //TODO: Process measurements
+                if (line != null) {
+//                    System.out.println(line);
+                    weatherdata.addLine(line);
 
-                if (line.contains("</WEATHERDATA>")){
-                    System.out.println("XML finished");
-                    counter++;
-                    if (counter > 9) {
-                        return;
+                    if (line.contains("</WEATHERDATA>")) {
+                        weatherdata.printWeatherdata();
+                        weatherdata = new Weatherdata();
+                        counter++;
+                        if (counter > 9) {
+                            return true;
+                        }
                     }
+                } else {
+                    return false;
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            return false;
         }
     }
 }

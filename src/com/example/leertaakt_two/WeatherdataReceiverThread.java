@@ -22,7 +22,9 @@ class WeatherdataReceiverThread implements Runnable {
 
     @Override public void run() {
         while (true){
-            this.weatherdataStreamReader.receiveWeatherdata();
+            if (!this.weatherdataStreamReader.receiveWeatherdata()){
+                return;
+            }
         }
     }
 }
