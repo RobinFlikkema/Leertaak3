@@ -54,14 +54,14 @@ class Database {
                 + " wind_speed,"
                 + " rain_fall,"
                 + " snow_fall,"
+                + " cloudly_per,"
+                + " wind_dir,"
                 + " freeze,"
                 + " rain,"
                 + " snow,"
                 + " hail,"
                 + " thunder,"
-                + " tornado,"
-                + " cloudly_per,"
-                + " wind_dir)"
+                + " tornado)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
@@ -70,6 +70,7 @@ class Database {
 
             PreparedStatement statement = con.prepareStatement(query);
 
+            measurement.processValues(measurement.input);
             statement.setInt(1, Integer.valueOf(measurement.getValue(0)));
             statement.setDate(2, Date.valueOf(measurement.getValue(1)));
             statement.setTime(3, Time.valueOf(measurement.getValue(2)));
@@ -80,18 +81,19 @@ class Database {
             statement.setBigDecimal(8, new BigDecimal(measurement.getValue(7)));
             statement.setBigDecimal(9, new BigDecimal(measurement.getValue(8)));
             statement.setBigDecimal(10, new BigDecimal(measurement.getValue(9)));
-            statement.setBoolean(11, Boolean.valueOf(measurement.getValue(10)));
-            statement.setBoolean(12, Boolean.valueOf(measurement.getValue(11)));
-            statement.setBoolean(13, Boolean.valueOf(measurement.getValue(12)));
+            statement.setBigDecimal(11, new BigDecimal(measurement.getValue(10)));
+            statement.setBigDecimal(12, new BigDecimal(measurement.getValue(11)));
+            statement.setInt(13, Integer.valueOf(measurement.getValue(12)));
             statement.setBoolean(14, Boolean.valueOf(measurement.getValue(13)));
             statement.setBoolean(15, Boolean.valueOf(measurement.getValue(14)));
             statement.setBoolean(16, Boolean.valueOf(measurement.getValue(15)));
-            statement.setBigDecimal(17, new BigDecimal(measurement.getValue(16)));
-            statement.setInt(18, Integer.valueOf(measurement.getValue(17)));
-
+            statement.setBoolean(17, Boolean.valueOf(measurement.getValue(16)));
+            statement.setBoolean(18, Boolean.valueOf(measurement.getValue(17)));
+            statement.setBoolean(19, Boolean.valueOf(measurement.getValue(18)));
+            System.out.println(statement.toString());
             statement.execute();
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             disconnect();
