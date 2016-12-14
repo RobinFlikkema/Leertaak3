@@ -29,6 +29,7 @@ class Weatherdata {
 
     void printWeatherdata(){
         for (Measurement row:weatherdata) {
+            System.out.println("printWeatherdata");
             db.insertMeasurement(row);
             System.out.println(row.toString());
         }

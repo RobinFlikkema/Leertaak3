@@ -5,13 +5,14 @@ import java.math.BigDecimal;
 
 class Database {
 
-    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mysql://controlpanel.bennink.me/leertaak2";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://controlpanel.bennink.me/leertaak2?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Amsterdam";
 
     private static final String USER = "leertaak2";
     private static final String PASS = "Wyup&960";
 
     private Connection con;
+
 
     private Connection connect() {
         try {

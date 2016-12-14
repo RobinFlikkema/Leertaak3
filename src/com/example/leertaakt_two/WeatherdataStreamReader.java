@@ -23,7 +23,7 @@ class WeatherdataStreamReader {
             while (true) {
                 String line = bufferedReader.readLine();
                 if (line != null) {
-//                    System.out.println(line);
+                    System.out.println(line);
                     weatherdata.addLine(line);
 
                     if (line.contains("</WEATHERDATA>")) {
