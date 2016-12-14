@@ -9,6 +9,7 @@ class Weatherdata {
     private ArrayList<String> XML = new ArrayList<>();
     private Measurement measurement = new Measurement();
     private ArrayList<Measurement> weatherdata = new ArrayList<>();
+    private Database db = new Database();
 
     Weatherdata(){
 
@@ -28,6 +29,7 @@ class Weatherdata {
 
     void printWeatherdata(){
         for (Measurement row:weatherdata) {
+            db.insertMeasurement(row);
             System.out.println(row.toString());
         }
     }

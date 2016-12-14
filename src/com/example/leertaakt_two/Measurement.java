@@ -20,6 +20,10 @@ public class Measurement {
         values[i] = stripTags(line);
     }
 
+    String getValue(int pos) {
+        return values[pos];
+    }
+
     public String toString() {
         return Arrays.toString(values);
     }
