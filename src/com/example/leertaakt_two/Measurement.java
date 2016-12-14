@@ -28,4 +28,12 @@ public class Measurement {
         return input.replaceAll("<.*?>", "");
     }
 
+    private String[] processValues(String[] input){
+        String[] output = new String[19];
+        // Copy values into new Array
+        System.arraycopy(input, 0, output, 0, input.length);
+
+    return output;
+    }
+
 }
