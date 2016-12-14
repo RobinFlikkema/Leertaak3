@@ -34,7 +34,8 @@ public class Measurement {
 
     private String[] processValues(String[] input){
         String[] output = new String[19];
-        // Copy values into new Array
+        // Copy values into new Array for the time being
+        // TODO: Process values by looking at previous data
         System.arraycopy(input, 0, output, 0, input.length);
 
     return output;
