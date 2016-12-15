@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * Created by Robin on 9-12-2016.
  */
-public class Measurement {
+class Measurement {
     private String[] values = new String[19];
     private final String[] index = {"STN", "DATE", "TIME", "TEMP", "DEWP", "STP", "SLP", "VISIB", "WDSP", "PRCP", "SNDP", "CLDC", "WNDDIR", "FRSHTT"};
 

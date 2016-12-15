@@ -5,6 +5,6 @@ import java.net.ServerSocket;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        new WeatherdataReceiver(new ServerSocket(7789));
+        new WeatherdataService(new ServerSocket(7789));
     }
 }

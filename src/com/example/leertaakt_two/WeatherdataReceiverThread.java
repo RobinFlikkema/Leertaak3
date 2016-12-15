@@ -9,6 +9,7 @@ class WeatherdataReceiverThread implements Runnable {
     private WeatherdataStreamReader weatherdataStreamReader;
 
     WeatherdataReceiverThread(Socket socket){
+        System.out.println("new Thread");
         try {
            this.weatherdataStreamReader = new WeatherdataStreamReader(socket.getInputStream());
         } catch (Exception e) {
