@@ -70,7 +70,6 @@ class Database {
 
             PreparedStatement statement = con.prepareStatement(query);
 
-            measurement.processValues(measurement.input);
             statement.setInt(1, Integer.valueOf(measurement.getValue(0)));
             statement.setDate(2, Date.valueOf(measurement.getValue(1)));
             statement.setTime(3, Time.valueOf(measurement.getValue(2)));
@@ -90,7 +89,6 @@ class Database {
             statement.setBoolean(17, Boolean.valueOf(measurement.getValue(16)));
             statement.setBoolean(18, Boolean.valueOf(measurement.getValue(17)));
             statement.setBoolean(19, Boolean.valueOf(measurement.getValue(18)));
-            System.out.println(statement.toString());
             statement.execute();
 
         } catch (Exception ex) {
