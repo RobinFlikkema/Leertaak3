@@ -1,6 +1,5 @@
 package com.example.leertaakt_two;
 
-import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -10,10 +9,9 @@ class WeatherdataReceiverThread implements Runnable {
     private WeatherdataStreamReader weatherdataStreamReader;
 
     WeatherdataReceiverThread(Socket socket){
-        System.out.println("New Thread");
         try {
            this.weatherdataStreamReader = new WeatherdataStreamReader(socket.getInputStream());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
