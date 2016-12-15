@@ -20,9 +20,6 @@ class WeatherdataReceiver {
 
             counter++;
             System.out.println(counter);
-            /*
-            Dit werkt niet ofzo omdat hij de socket niet "released" of omdat ie blockt?
-             */
         }
     }
 }
