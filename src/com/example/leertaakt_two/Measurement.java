@@ -21,14 +21,9 @@ public class Measurement {
             values[i] = stripTags(line);
         } else {
             String strippedLine = stripTags(line);
-            System.out.println(strippedLine);
-            values[i] = String.valueOf(strippedLine.charAt(0));
-            System.out.println(values[i]);
-            values[i+1] = String.valueOf(strippedLine.charAt(1));
-            values[i+2] = String.valueOf(strippedLine.charAt(2));
-            values[i+3] = String.valueOf(strippedLine.charAt(3));
-            values[i+4] = String.valueOf(strippedLine.charAt(4));
-            values[i+5] = String.valueOf(strippedLine.charAt(5));
+            for (int j = 0; j < 6; j++ ){
+                values[i+j] = String.valueOf(strippedLine.charAt(j));
+            }
         }
     }
 

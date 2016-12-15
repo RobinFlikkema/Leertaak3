@@ -11,20 +11,14 @@ import java.util.concurrent.Executors;
  */
 class WeatherdataReceiver {
 
-    ExecutorService receiver = Executors.newFixedThreadPool(5);
+    private ExecutorService receiver = Executors.newFixedThreadPool(5);
 
     WeatherdataReceiver(ServerSocket serverSocket)
             throws IOException {
-        int counter = 0;
         while (true) {
             Socket socket = serverSocket.accept();
-//            ProcessWeatherdata(socket.getInputStream());
+            receiver.submit(new WeatherdataReceiverThread(socket));
 
-            Thread weatherdataProcessor = new Thread(new WeatherdataReceiverThread(socket));
-            weatherdataProcessor.start();
-
-            counter++;
-            System.out.println(counter);
         }
     }
 }
