@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
  */
 class WeatherdataReceiver {
 
-    ExecutorService executor = Executors.newFixedThreadPool(5);
+    ExecutorService receiver = Executors.newFixedThreadPool(5);
 
     WeatherdataReceiver(ServerSocket serverSocket)
             throws IOException {

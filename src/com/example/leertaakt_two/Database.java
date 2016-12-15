@@ -83,12 +83,12 @@ class Database {
             statement.setBigDecimal(11, new BigDecimal(measurement.getValue(10)));
             statement.setBigDecimal(12, new BigDecimal(measurement.getValue(11)));
             statement.setInt(13, Integer.valueOf(measurement.getValue(12)));
-            statement.setBoolean(14, Boolean.valueOf(measurement.getValue(13)));
-            statement.setBoolean(15, Boolean.valueOf(measurement.getValue(14)));
-            statement.setBoolean(16, Boolean.valueOf(measurement.getValue(15)));
-            statement.setBoolean(17, Boolean.valueOf(measurement.getValue(16)));
-            statement.setBoolean(18, Boolean.valueOf(measurement.getValue(17)));
-            statement.setBoolean(19, Boolean.valueOf(measurement.getValue(18)));
+            statement.setInt(14, Integer.valueOf(measurement.getValue(13)));
+            statement.setInt(15, Integer.valueOf(measurement.getValue(14)));
+            statement.setInt(16, Integer.valueOf(measurement.getValue(15)));
+            statement.setInt(17, Integer.valueOf(measurement.getValue(16)));
+            statement.setInt(18, Integer.valueOf(measurement.getValue(17)));
+            statement.setInt(19, Integer.valueOf(measurement.getValue(18)));
             statement.execute();
 
         } catch (Exception ex) {
