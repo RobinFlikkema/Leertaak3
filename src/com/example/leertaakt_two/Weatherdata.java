@@ -6,9 +6,8 @@ import java.util.ArrayList;
  * Created by Robin on 9-12-2016.
  */
 class Weatherdata {
-    private ArrayList<String> XML = new ArrayList<>();
     private Measurement measurement = new Measurement();
-    private ArrayList<Measurement> weatherdata = new ArrayList<>();
+    private ArrayList<Measurement> weather_data = new ArrayList<>();
     private Database db = new Database();
 
     Weatherdata(){
@@ -20,7 +19,7 @@ class Weatherdata {
             if (line.contains("<MEASUREMENT>")){
                 measurement = new Measurement();
             } else if (line.contains("</MEASUREMENT>")){
-                weatherdata.add(measurement);
+                weather_data.add(measurement);
             } else {
                 measurement.addValue(line.trim());
             }
@@ -28,7 +27,7 @@ class Weatherdata {
     }
 
     void printWeatherdata(){
-        for (Measurement row:weatherdata) {
+        for (Measurement row: weather_data) {
             System.out.println("printWeatherdata");
             db.insertMeasurement(row);
             // TODO: Change this to use queueing system (?) (max connections)
