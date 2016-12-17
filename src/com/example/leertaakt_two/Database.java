@@ -2,9 +2,8 @@ package com.example.leertaakt_two;
 
 import java.sql.*;
 import java.math.BigDecimal;
-import java.util.concurrent.BlockingQueue;
 
-class Database implements Runnable {
+class Database {
 
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://controlpanel.bennink.me/leertaak2?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Amsterdam";
@@ -13,30 +12,7 @@ class Database implements Runnable {
     private static final String PASS = "Wyup&960";
 
     private Connection con;
-    private BlockingQueue<Weatherdata> weatherdata_queue;
 
-
-    Database(BlockingQueue<Weatherdata> weatherdata_queue) {
-        this.weatherdata_queue = weatherdata_queue;
-        Thread processor = new Thread(this);
-        processor.start();
-    }
-
-    public void run() {
-        try {
-
-            System.out.println("Queue");
-
-            Weatherdata weatherdata_item = weatherdata_queue.take();
-
-            for (int i = 0; i < 10; i++) {
-                Measurement measurement = weatherdata_item.getMeasurement(i);
-                this.insertMeasurement(measurement);
-                }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     private Connection connect() {
         try {
