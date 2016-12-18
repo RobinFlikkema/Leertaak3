@@ -8,3 +8,7 @@ public class Main {
         new WeatherdataService(new ServerSocket(7789));
     }
 }
+
+// TODO: Fix Booleans inserting (1 is not 1)
+// TODO: Improve processing system
+// TODO: Correct values accordingly
