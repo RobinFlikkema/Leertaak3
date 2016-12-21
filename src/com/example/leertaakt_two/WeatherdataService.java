@@ -22,8 +22,8 @@ class WeatherdataService {
 
     WeatherdataService(ServerSocket serverSocket)
             throws IOException {
-        BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<Measurement>(2500);
-        BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<Measurement>(2500);
+        BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<>(2500);
+        BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(2500);
 
         ExecutorService[] threadPools = new ExecutorService[4];                  // Create Executor service (e.g. Threadpools)
                                                                                  // https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
