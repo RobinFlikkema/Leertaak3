@@ -1,11 +1,6 @@
 package com.example.leertaakt_two;
 
-import jdk.nashorn.internal.ir.Block;
-
-import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Created by Robin on 15-12-2016.

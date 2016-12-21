@@ -22,12 +22,12 @@ class WeatherdataService {
 
     WeatherdataService(ServerSocket serverSocket)
             throws IOException {
-        BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<Measurement>(1000);
-        BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<Measurement>(1000);
+        BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<Measurement>(2500);
+        BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<Measurement>(2500);
 
         ExecutorService[] threadPools = new ExecutorService[4];                  // Create Executor service (e.g. Threadpools)
                                                                                  // https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
-        threadPools[0] = Executors.newFixedThreadPool(25);              // Add Threads to Receiver threadpool
+        threadPools[0] = Executors.newCachedThreadPool();                        // Add Threads to Receiver threadpool
         threadPools[1] = Executors.newFixedThreadPool(5);               // Add Threads to Worker threadpool
         threadPools[2] = Executors.newFixedThreadPool(15);              // Add Threads to MySQL threadpool
         threadPools[3] = Executors.newFixedThreadPool(1);               // Add Threads to Counter threadpool
