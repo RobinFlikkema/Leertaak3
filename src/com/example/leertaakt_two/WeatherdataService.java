@@ -1,8 +1,10 @@
 package com.example.leertaakt_two;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -24,6 +26,8 @@ class WeatherdataService {
             throws IOException {
         BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<>(2500);
         BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(2500);
+        Station[] stationList = new Station[1000000];
+        Arrays.fill(stationList, new Station());
 
         ExecutorService[] threadPools = new ExecutorService[4];                  // Create Executor service (e.g. Threadpools)
                                                                                  // https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
@@ -32,7 +36,7 @@ class WeatherdataService {
         threadPools[2] = Executors.newFixedThreadPool(15);              // Add Threads to MySQL threadpool
         threadPools[3] = Executors.newFixedThreadPool(1);               // Add Threads to Counter threadpool
 
-        threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue));//
+        threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue, stationList));//
         for (int i = 0; i < 15; i++){
             threadPools[2].submit(new InserterThread(storageQueue));             //
         }

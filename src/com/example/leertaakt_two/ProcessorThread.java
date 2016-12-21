@@ -1,6 +1,5 @@
 package com.example.leertaakt_two;
 
-import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -9,22 +8,39 @@ import java.util.concurrent.BlockingQueue;
 public class ProcessorThread implements Runnable {
     private BlockingQueue<Measurement> processingQueue;
     private BlockingQueue<Measurement> storageQueue;
+    private Station[] stations;
 
-    ProcessorThread(BlockingQueue<Measurement> processingQueue, BlockingQueue<Measurement> storageQueue) {
+    ProcessorThread(BlockingQueue<Measurement> processingQueue, BlockingQueue<Measurement> storageQueue, Station[] stations) {
         this.processingQueue = processingQueue;
         this.storageQueue = storageQueue;
+        this.stations = stations;
     }
 
     @Override public void run() {
         while (true) {
-            synchronized (this) {
                 // TODO: Some form of map which stores the last values
                 try {
-                    storageQueue.put(processingQueue.take());
-                } catch (InterruptedException e) {
+                    Measurement measurement = processingQueue.take();
+                    measurement = this.checkMeasurement(measurement);
+                    stations[measurement.getStationNumber()].addMeasurement(measurement);
+                    storageQueue.put(measurement);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
         }
+    }
+
+    private Measurement checkMeasurement(Measurement measurement){
+        int indexOfMissingValue = measurement.valueIsMissing();
+        int stationNumber = measurement.getStationNumber();
+        double temp = measurement.getTemperature();
+        if (indexOfMissingValue > 0){
+            String tempString = String.valueOf(stations[stationNumber].getExtrapolatedValue(indexOfMissingValue));
+            measurement.setValue(indexOfMissingValue, tempString);
+        }
+        if (!stations[stationNumber].isTemperaturePlausible(temp)){
+            measurement.setValue(3 ,String.valueOf(stations[stationNumber].getExtrapolatedTemperature()));
+        }
+        return measurement;
     }
 }

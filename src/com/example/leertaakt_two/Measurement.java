@@ -1,6 +1,7 @@
 package com.example.leertaakt_two;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Created by Robin on 9-12-2016.
@@ -27,8 +28,26 @@ class Measurement {
         }
     }
 
+    int getStationNumber(){
+        return Integer.valueOf(this.getValue(0));
+    }
+
+    double getTemperature(){
+        return Double.valueOf(this.getValue(3));
+    }
+
     String getValue(int pos) {
-        return values[pos];
+        return this.values[pos];
+    }
+
+
+
+    double getValueAsDouble(int pos) {
+        return Double.valueOf(this.values[pos]);
+    }
+
+    public void setValue(int pos, String value){
+        values[pos] = value;
     }
 
     public String toString() {
@@ -38,5 +57,17 @@ class Measurement {
     private String stripTags(String input) {
         return input.replaceAll("<.*?>", "");
     }
+
+    public int valueIsMissing(){
+        int index = 0;
+        for (String value : values) {
+            if (Objects.equals(value, "")){
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
 
 }
