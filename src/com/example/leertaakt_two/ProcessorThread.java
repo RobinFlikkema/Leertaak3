@@ -34,9 +34,10 @@ public class ProcessorThread implements Runnable {
         int indexOfMissingValue = measurement.valueIsMissing();
         int stationNumber = measurement.getStationNumber();
         double temp = measurement.getTemperature();
-        if (indexOfMissingValue > 0){
-            String tempString = String.valueOf(stations[stationNumber].getExtrapolatedValue(indexOfMissingValue));
-            measurement.setValue(indexOfMissingValue, tempString);
+        if (indexOfMissingValue > 0 && 12 > indexOfMissingValue){
+            measurement.setValue(indexOfMissingValue, String.valueOf(stations[stationNumber].getExtrapolatedValue(indexOfMissingValue)));
+        } else if (indexOfMissingValue > 11){
+            measurement.setValue(indexOfMissingValue, "0");
         }
         if (!stations[stationNumber].isTemperaturePlausible(temp)){
             measurement.setValue(3 ,String.valueOf(stations[stationNumber].getExtrapolatedTemperature()));

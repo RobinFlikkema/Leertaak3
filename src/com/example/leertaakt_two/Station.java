@@ -21,21 +21,23 @@ public class Station {
 
     double getExtrapolatedTemperature() {
         if (measurements.size() > 1) {
-            double slope = (measurements.get(0).getTemperature() - measurements.get(measurements.size()-1).getTemperature()) / (0 - (measurements.size()-1));
-            return measurements.get(measurements.size()-1).getTemperature() + slope;
+            double slope = (measurements.get(0).getTemperature() - measurements.get(measurements.size() - 1).getTemperature()) / (0 - (measurements.size() - 1));
+            return Math.round(measurements.get(measurements.size() - 1).getTemperature() + slope * 10) / 10;
         }
         return 0.0;
     }
 
     double getExtrapolatedValue(int pos) {
         if (measurements.size() > 1) {
-            double slope = (measurements.get(0).getValueAsDouble(pos) - measurements.get(measurements.size()-1).getValueAsDouble(pos)) / (0 - (measurements.size()-1));
-            return measurements.get(measurements.size()-1).getValueAsDouble(pos) + slope;
+            double slope = (measurements.get(0).getValueAsDouble(pos) - measurements.get(measurements.size() - 1).getValueAsDouble(pos)) / (0 - (measurements.size() - 1));
+            if (slope > 0) {
+                return measurements.get(measurements.size() - 1).getValueAsDouble(pos) + slope;
+            }
         }
         return 0.0;
     }
 
-    boolean isTemperaturePlausible(double temperature){
+    boolean isTemperaturePlausible(double temperature) {
         return (getExtrapolatedTemperature() * 1.20) < temperature && temperature > (getExtrapolatedTemperature() * 0.80);
     }
 }

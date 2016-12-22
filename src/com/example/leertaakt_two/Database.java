@@ -148,7 +148,7 @@ class Database {
                 statement.addBatch();
             }
             statement.executeBatch();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
             this.disconnect();
