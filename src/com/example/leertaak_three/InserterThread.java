@@ -1,4 +1,4 @@
-package com.example.leertaakt_two;
+package com.example.leertaak_three;
 
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
@@ -7,11 +7,11 @@ import java.util.concurrent.BlockingQueue;
  * Created by Robin on 17-12-2016.
  */
 public class InserterThread implements Runnable {
-    private Database database;
+    private CSV CSV;
     private BlockingQueue<Measurement> queue;
 
     InserterThread(BlockingQueue<Measurement> queue) {
-        this.database = new Database();
+        this.CSV = new CSV();
         this.queue = queue;
     }
 
@@ -19,7 +19,7 @@ public class InserterThread implements Runnable {
         while (true) {
             ArrayList<Measurement> listOfMeasurements = new ArrayList<Measurement>();
             try {
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 100; i++) {
                         listOfMeasurements.add(queue.take());
                     }
             } catch (InterruptedException e) {
@@ -27,7 +27,7 @@ public class InserterThread implements Runnable {
             }
 
             System.out.println("Queue");
-            database.insertMeasurements(listOfMeasurements);
+            CSV.insertMeasurements(listOfMeasurements);
         }
     }
 }

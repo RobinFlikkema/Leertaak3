@@ -1,4 +1,4 @@
-package com.example.leertaakt_two;
+package com.example.leertaak_three;
 
 import java.io.BufferedReader;
 import java.io.IOException;

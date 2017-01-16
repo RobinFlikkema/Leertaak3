@@ -1,4 +1,4 @@
-package com.example.leertaakt_two;
+package com.example.leertaak_three;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 class Weatherdata {
     private Measurement measurement = new Measurement();
     private ArrayList<Measurement> weather_data = new ArrayList<>();
-    private Database db = new Database();
+    private CSV db = new CSV();
 
     Weatherdata(){
     }

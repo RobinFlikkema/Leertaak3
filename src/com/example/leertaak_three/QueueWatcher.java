@@ -1,4 +1,4 @@
-package com.example.leertaakt_two;
+package com.example.leertaak_three;
 
 import java.util.concurrent.BlockingQueue;
 
