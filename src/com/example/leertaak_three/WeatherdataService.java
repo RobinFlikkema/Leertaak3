@@ -32,7 +32,7 @@ class WeatherdataService {
                                                                                  // https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
         threadPools[0] = Executors.newCachedThreadPool();                        // Add Threads to Receiver threadpool
         threadPools[1] = Executors.newFixedThreadPool(5);               // Add Threads to Worker threadpool
-        threadPools[2] = Executors.newFixedThreadPool(1);              // Add Threads to MySQL threadpool
+        threadPools[2] = Executors.newFixedThreadPool(1);               // Add Threads to MySQL threadpool
         threadPools[3] = Executors.newFixedThreadPool(1);               // Add Threads to Counter threadpool
 
         threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue, stationList));//

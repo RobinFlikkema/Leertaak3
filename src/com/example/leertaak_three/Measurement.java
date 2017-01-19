@@ -3,9 +3,7 @@ package com.example.leertaak_three;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * Created by Robin on 9-12-2016.
- */
+
 class Measurement {
     private String[] values = new String[19];
     private final String[] index = {"STN", "DATE", "TIME", "TEMP", "DEWP", "STP", "SLP", "VISIB", "WDSP", "PRCP", "SNDP", "CLDC", "WNDDIR", "FRSHTT"};
@@ -36,7 +34,7 @@ class Measurement {
         return Double.valueOf(this.getValue(3));
     }
 
-    String getValue(int pos) {
+    private String getValue(int pos) {
         return this.values[pos];
     }
 
@@ -48,7 +46,7 @@ class Measurement {
         return Double.valueOf(this.values[pos]);
     }
 
-    public void setValue(int pos, String value){
+    void setValue(int pos, String value){
         values[pos] = value;
     }
 
@@ -60,7 +58,7 @@ class Measurement {
         return input.replaceAll("<.*?>", "");
     }
 
-    public int valueIsMissing(){
+    int valueIsMissing(){
         int index = 0;
         for (String value : values) {
             if (Objects.equals(value, "")){

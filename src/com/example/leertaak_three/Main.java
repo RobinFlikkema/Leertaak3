@@ -8,6 +8,3 @@ public class Main {
         new WeatherdataService(new ServerSocket(7789));
     }
 }
-
-// TODO: Improve processing system
-// TODO: Correct values accordingly
