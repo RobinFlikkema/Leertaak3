@@ -3,8 +3,10 @@ package com.example.leertaak_three;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +32,13 @@ class CSV {
             // This is useful, but stalls the Thread when it can't open the CSV. Therefore
             // the application can't process anymore data resulting in a backlog
             e.printStackTrace();
+            PrintWriter pw = null;
+            try {
+                pw = new PrintWriter("log.txt");
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+            pw.println(e.toString());
         }
 
         CsvWriter csvwriter = new CsvWriter(writer, new CsvWriterSettings());
