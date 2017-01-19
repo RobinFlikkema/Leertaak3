@@ -40,7 +40,9 @@ class Measurement {
         return this.values[pos];
     }
 
-
+    String[] getValues(){
+        return this.values;
+    }
 
     double getValueAsDouble(int pos) {
         return Double.valueOf(this.values[pos]);
