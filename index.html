@@ -18,22 +18,36 @@
     <![endif]-->
     <script src="http://code.highcharts.com/stock/highstock.js"></script>
     <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
-<body>
+
+
+<body style="background-color: #9acfea">
+
+<div class="jumbotron text-center" style="background-color: #00247d">
+    <h1 style="display: inline">
+        <span style="color: #ffffff; font-family: 'Lucida Fax', serif">New Zealand energy corp</span>
+    </h1>
+</div>
+
 <div class="container-fluid">
-    <div class="jumbotron text-center">
-        <h1>New Zealand energy corp</h1>
-    </div>
     <div class="row">
-        <div class="col-xs-7">
-            <div id="stockchartcontainer"></div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="stockchartcontainer"></div>
+                </div>
+            </div>
         </div>
-        <div class="col-xs-5">
-            <div id="spiderwebchartcontainer"></div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="spiderwebchartcontainer"></div>
+                </div>
+            </div>
         </div>
     </div>
+
 </div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -42,6 +56,5 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
-
 <script src="js/stockchart.js"></script>
 <script src="js/spiderwebchart.js"></script>

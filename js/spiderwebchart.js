@@ -8,12 +8,11 @@ $(function () {
         },
 
         title: {
-            text: 'Budget vs spending',
-            x: -80
+            text: 'Budget vs spending'
         },
 
         pane: {
-            size: '80%'
+            size: '100%'
         },
 
         xAxis: {
@@ -35,10 +34,9 @@ $(function () {
         },
 
         legend: {
-            align: 'right',
-            verticalAlign: 'top',
-            y: 70,
-            layout: 'vertical'
+            align: 'center',
+            verticalAlign: 'bottom',
+            layout: 'horizontal'
         },
 
         series: [{
@@ -49,7 +47,11 @@ $(function () {
             name: 'Actual Spending',
             data: [50000, 39000, 42000, 31000, 26000, 14000],
             pointPlacement: 'on'
-        }]
+        }],
+
+        credits: {
+            enabled: false
+        }
 
     });
 });

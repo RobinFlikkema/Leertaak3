@@ -18,7 +18,11 @@ $(function () {
                 tooltip: {
                     valueDecimals: 2
                 }
-            }]
+            }],
+
+            credits: {
+                enabled: false
+            }
         });
     });
 
