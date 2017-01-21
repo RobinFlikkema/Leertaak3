@@ -4,7 +4,6 @@ $(function () {
         // Create the chart
         Highcharts.stockChart('stockchartcontainer', {
 
-
             rangeSelector: {
                 selected: 1
             },
