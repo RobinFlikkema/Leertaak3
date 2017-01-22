@@ -5,15 +5,17 @@ from bottle import *
 # TODO: disable debug mode in production
 debug(True)
 
+m = measureData.Measurements()
+
 
 @route('/api/station')
 def station_data():
     station = request.query.id
-    date = request.query.date
-    time = request.query.time
+    time_from = request.query.time_from
+    time_to = request.query.time_to
     limit = request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
-    return measureData.get_station_data(station, date, time, limit, measurements)
+    return json_dumps(m.get_station_data(station, time_from, time_to, limit, measurements))
 
 
 @route('/api/country')
@@ -21,12 +23,12 @@ def country_data():
     country = request.query.country
     limit = request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
-    return measureData.get_country_data(country, limit, measurements)
+    return json_dumps(m.get_country_data(country, limit, measurements))
 
 
 @error(404)
 def four_o_four_error(code):
-    return '{"error": {"code": "404", "message": "Invalid method"}}'
+    return json_dumps({"error": {"code": "-1", "message": "Invalid method."}})
 
 
 if __name__ == '__main__':
