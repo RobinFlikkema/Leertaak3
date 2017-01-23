@@ -20,7 +20,7 @@ class CSV {
 
             CsvWriter csvwriter = new CsvWriter(writer, new CsvWriterSettings());
             for (Measurement measurement : measurements) {
-                csvwriter.writeRow(measurement.getValues());
+                csvwriter.writeRow(measurement.getValuesForCSV());
             }
         } catch (IOException e) {
             e.printStackTrace();
