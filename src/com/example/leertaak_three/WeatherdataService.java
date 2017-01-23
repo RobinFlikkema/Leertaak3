@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
  * WeatherdataService
  *
  * This class is used to spawn the different threads, keep track of queues and accept new connections.
+ * The constructor of this class takes a ServerSocket which is used to listen to new connections.
  */
 class WeatherdataService {
 
