@@ -1,5 +1,5 @@
+from bottle import route, debug, request, error, run, json_dumps
 from API import measureData
-from bottle import *
 
 # Bottle debug mode
 # TODO: disable debug mode in production
@@ -8,7 +8,7 @@ debug(True)
 m = measureData.Measurements()
 
 
-@route('/api/station')
+@route('/station')
 def station_data():
     station = request.query.id
     time_from = request.query.time_from
@@ -18,7 +18,7 @@ def station_data():
     return json_dumps(m.get_station_data(station, time_from, time_to, limit, measurements))
 
 
-@route('/api/country')
+@route('/country')
 def country_data():
     country = request.query.country
     limit = request.query.limit
@@ -33,4 +33,4 @@ def four_o_four_error(code):
 
 if __name__ == '__main__':
     # TODO: change variables to production values
-    run(host='localhost', port=80, debug=True, reloader=True)
+    run(server='paste', host='127.0.0.1', port=80, debug=True, reloader=True)

@@ -14,8 +14,6 @@ class Measurements:
 
     def get_station_data(self, station, measurements, time_from=0, time_to=0, limit=20):
 
-        # TODO: store date and time as timestamp in csv
-
         station_data = self.db.select_station_data(station)
 
         if station_data is None:
