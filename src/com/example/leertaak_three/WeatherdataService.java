@@ -11,42 +11,45 @@ import java.util.concurrent.Executors;
 
 /**
  * WeatherdataService
- * This service is home for all Threads and Threadpools which handle:
- * - The receiving of Measurements
- * - TODO: The processing of data and correcting it
- * All threadPools live within ExecutorSerivce[] threadPools.
- * threadPools[0] houses all Threads which handle incoming connections
- * threadPools[1] TODO:
- * threadPools[2] TODO:
+ *
+ * This class is used to spawn the different threads, keep track of queues and accept new connections.
  */
 class WeatherdataService {
 
     WeatherdataService(ServerSocket serverSocket)
             throws IOException {
+        // This queue hold Measurements waiting to be processed (checked for missing values etc)
         BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<>(10000);
+        // This queue hold Measurements waiting to be stored on the disk
         BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(10000);
+        // This Station Array is used to hold all Stations. This is later used to calculate missing values.
         Station[] stationList = new Station[1000000];
         Arrays.fill(stationList, new Station());
+        // As the name says, this holds the ThreadPools.
+        ExecutorService[] threadPools = new ExecutorService[4];
 
-        ExecutorService[] threadPools = new ExecutorService[4];                  // Create Executor service (e.g. Threadpools)
-                                                                                 // https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
         threadPools[0] = Executors.newCachedThreadPool();                        // Add Threads to Receiver threadpool
         threadPools[1] = Executors.newFixedThreadPool(5);               // Add Threads to Worker threadpool
-        threadPools[2] = Executors.newFixedThreadPool(1);               // Add Threads to MySQL threadpool
+        threadPools[2] = Executors.newFixedThreadPool(1);               // Add Threads to Inserter threadpool
         threadPools[3] = Executors.newFixedThreadPool(1);               // Add Threads to Counter threadpool
 
+        // TODO: REMOVE THIS
         threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue, stationList));//
         for (int i = 0; i < 1; i++){
             threadPools[2].submit(new InserterThread(storageQueue));             //
         }
+
+        // TODO: DIT KAN ER LANGZAMERHAND OOK UIT TOCH?
         threadPools[3].submit(new QueueWatcher(processingQueue, storageQueue));  // DIT IS TIJDELIJK ofzo!
         // Needs to count the amount of requests that were handled
 
 
+        // Loop to handle all incoming connections.
         //noinspection InfiniteLoopStatement                                     // This is just there for IntelliJ
-        while (true) {                                                           // Keep listening for clients
-            Socket socket = serverSocket.accept();                               // Accept new clients on socket
-            threadPools[0].submit(new WeatherdataReceiverThread(socket, processingQueue));   // Submit task (handle client) to a Thread in Threadpool
+        while (true) {
+            // This accepts connections and spawns a thread per connection. The thread is automatically deleted / reused when it dies.
+            Socket socket = serverSocket.accept();
+            threadPools[0].submit(new WeatherdataReceiverThread(socket, processingQueue));
         }
     }
 }
