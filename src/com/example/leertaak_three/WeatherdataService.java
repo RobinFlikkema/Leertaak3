@@ -11,7 +11,6 @@ import java.util.concurrent.Executors;
 
 /**
  * WeatherdataService
- *
  * This class is used to spawn the different threads, keep track of queues and accept new connections.
  * The constructor of this class takes a ServerSocket which is used to listen to new connections.
  */
@@ -36,7 +35,7 @@ class WeatherdataService {
 
         // TODO: REMOVE THIS
         threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue, stationList));//
-        for (int i = 0; i < 1; i++){
+        for (int i = 0; i < 1; i++) {
             threadPools[2].submit(new InserterThread(storageQueue));             //
         }
 

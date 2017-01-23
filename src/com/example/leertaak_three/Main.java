@@ -10,7 +10,8 @@ public class Main {
     // The port used for receiving weatherdata
     private static final int SERVER_PORT = 7789;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)
+            throws IOException {
         new WeatherdataService(new ServerSocket(SERVER_PORT));
     }
 }
