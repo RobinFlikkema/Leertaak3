@@ -8,22 +8,24 @@ debug(True)
 m = measureData.Measurements()
 
 
-@route('/station')
+@route('/api/station')
 def station_data():
     station = request.query.id
-    time_from = request.query.time_from
-    time_to = request.query.time_to
-    limit = request.query.limit
+    time_from = 0 if request.query.time_from is "" else request.query.time_from
+    time_to = 0 if request.query.time_to is "" else request.query.time_to
+    limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
-    return json_dumps(m.get_station_data(station, time_from, time_to, limit, measurements))
+
+    return json_dumps(m.get_station_data(station, measurements, time_from, time_to, limit))
 
 
-@route('/country')
+@route('/api/country')
 def country_data():
-    country = request.query.country
-    limit = request.query.limit
+    country = request.query.name
+    limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
-    return json_dumps(m.get_country_data(country, limit, measurements))
+
+    return json_dumps(m.get_country_data(country, measurements, limit))
 
 
 @error(404)
@@ -33,4 +35,4 @@ def four_o_four_error(code):
 
 if __name__ == '__main__':
     # TODO: change variables to production values
-    run(server='paste', host='127.0.0.1', port=80, debug=True, reloader=True)
+    run(server='paste', host='127.0.0.1', port=8080, debug=True, reloader=True)

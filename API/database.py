@@ -9,8 +9,10 @@ class Conn:
 
     """
 
-    @staticmethod
-    def open():
+    def __init__(self):
+        self.prefix = "./API/"
+
+    def open(self):
         """ Open a connection with the database.
 
         Returns:
@@ -18,7 +20,8 @@ class Conn:
             c: Cursor database connection object.
 
         """
-        conn = sqlite3.connect('stations.db')
+
+        conn = sqlite3.connect(self.prefix + 'stations.db')
         c = conn.cursor()
         return conn, c
 

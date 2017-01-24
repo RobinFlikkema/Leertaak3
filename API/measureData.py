@@ -3,16 +3,18 @@ import datetime
 
 
 class Measurements:
+
     def __init__(self):
         self.measurements_pos = dict(temp=2, dew=3, air_station=4, air_sea=5, vis=6, wind=7, par=8, snow_fall=9,
                                      froze=10, rain=11, snow=12, hail=13, tun=14, tor=15, cloud=16, wind_dir=17)
         self.db = database.Conn()
+        self.prefix = "/home/csv-storage/"
 
     @staticmethod
     def to_date(timestamp):
         return datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
 
-    def get_station_data(self, station, measurements, time_from=0, time_to=0, limit=20):
+    def get_station_data(self, station, measurements, time_from, time_to, limit):
 
         station_data = self.db.select_station_data(station)
 
@@ -28,10 +30,10 @@ class Measurements:
             while counter < int(limit):
                 try:
                     date = datetime.datetime.timestamp(datetime.datetime.now())
-                    if counter == sum(1 for line in open(self.to_date(date) + ".csv", 'r', encoding='utf-8')):
+                    if counter == sum(1 for line in open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8')):
                         date += 86400
-                    with open(self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                        for line in csv:
+                    with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
+                        for line in reversed(csv):
                             counter += 1
                             value = line.strip().split(",")
                             if int(value[0]) == station:
@@ -42,7 +44,7 @@ class Measurements:
                                              'value': value[self.measurements_pos[measurements[i]]]}, )
                         else:
                             try:
-                                open(self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                                open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
                             except IOError:
                                 break
                 except IOError:
@@ -53,12 +55,12 @@ class Measurements:
             while counter < int(limit):
                 try:
                     date = time_from
-                    if counter == sum(1 for line in open(self.to_date(date) + ".csv", 'r', encoding='utf-8')):
+                    if counter == sum(1 for line in open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8')):
                         date += 86400
                     if date >= time_to:
                         break
-                    with open(self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                        for line in csv:
+                    with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
+                        for line in reversed(csv):
                             counter += 1
                             value = line.strip().split(",")
                             if int(value[0]) == station:
@@ -69,7 +71,7 @@ class Measurements:
                                              'value': value[self.measurements_pos[measurements[i]]]}, )
                         else:
                             try:
-                                open(self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                                open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
                             except IOError:
                                 break
                 except IOError:
@@ -80,10 +82,10 @@ class Measurements:
             while counter < int(limit):
                 try:
                     date = time_from
-                    if counter == sum(1 for line in open(self.to_date(date) + ".csv", 'r', encoding='utf-8')):
+                    if counter == sum(1 for line in open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8')):
                         date += 86400
-                    with open(self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                        for line in csv:
+                    with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
+                        for line in reversed(csv):
                             counter += 1
                             value = line.strip().split(",")
                             if int(value[0]) == station:
@@ -94,7 +96,7 @@ class Measurements:
                                              'value': value[self.measurements_pos[measurements[i]]]}, )
                         else:
                             try:
-                                open(self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                                open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
                             except IOError:
                                 break
                 except IOError:
@@ -105,7 +107,7 @@ class Measurements:
         else:
             return data
 
-    def get_country_data(self, country, measurements, limit=20):
+    def get_country_data(self, country, measurements, limit):
         stations_data = self.db.select_country_data(country)
 
         if stations_data is None:
@@ -118,10 +120,10 @@ class Measurements:
         while counter < int(limit):
             try:
                 date = datetime.datetime.timestamp(datetime.datetime.now())
-                if counter == sum(1 for line in open(self.to_date(date) + ".csv", 'r', encoding='utf-8')):
+                if counter == sum(1 for line in open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8')):
                     date += 86400
-                with open(self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                    for line in csv:
+                with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
+                    for line in reversed(csv):
                         counter += 1
                         value = line.strip().split(",")
                         for i in range(len(measurements)):
@@ -140,7 +142,7 @@ class Measurements:
                                                      'value': value[self.measurements_pos[measurements[i]]]}, )
                     else:
                         try:
-                            open(self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                            open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
                         except IOError:
                             break
             except IOError:
