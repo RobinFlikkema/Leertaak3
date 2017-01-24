@@ -18,7 +18,7 @@ class WeatherdataService {
     // The port used for receiving weatherdata
     private static final int SERVER_PORT = 7789;
 
-    WeatherdataService(ServerSocket serverSocket)
+    private WeatherdataService(ServerSocket serverSocket)
             throws IOException {
         // This queue hold Measurements waiting to be processed (checked for missing values etc)
         BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<>(10000);
@@ -35,10 +35,10 @@ class WeatherdataService {
         threadPools[2] = Executors.newFixedThreadPool(1);               // Add Threads to Inserter threadpool
         threadPools[3] = Executors.newFixedThreadPool(1);               // Add Threads to Counter threadpool
 
-        // TODO: REMOVE THIS
+        // TODO: REMOVE THIS PARTIALLY
         threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue, stationList));//
         for (int i = 0; i < 1; i++) {
-            threadPools[2].submit(new InserterThread(storageQueue));             //
+            threadPools[2].submit(new InserterThread(storageQueue));
         }
 
         // TODO: DIT KAN ER LANGZAMERHAND OOK UIT TOCH?
