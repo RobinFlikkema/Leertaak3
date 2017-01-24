@@ -1,8 +1,8 @@
 from bottle import route, debug, request, error, run, json_dumps
 from API import measureData
 
-# Bottle debug mode
 # TODO: disable debug mode in production
+# Bottle debug mode
 debug(True)
 
 m = measureData.Measurements()
@@ -43,4 +43,5 @@ def four_o_four_error(code):
 
 
 if __name__ == '__main__':
+    # TODO: disable debugging and reloader in production
     run(server='paste', host='127.0.0.1', port=8080, debug=True, reloader=True)

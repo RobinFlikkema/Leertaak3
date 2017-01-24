@@ -10,7 +10,9 @@ class Conn:
     """
 
     def __init__(self):
-        self.prefix = "./API/"
+        # TODO: production value
+        # self.prefix = "./API"
+        self.prefix = ""
 
     def open(self):
         """ Open a connection with the database.
