@@ -19,6 +19,15 @@ def station_data():
     return json_dumps(m.get_station_data(station, measurements, time_from, time_to, limit))
 
 
+@route('/api/stations')
+def stations_data():
+    station_ids = request.query.stations
+    limit = 20 if request.query.limit is "" else request.query.limit
+    measurements = ['temp', 'wind', 'wind_dir']
+
+    return json_dumps(m.get_stations_data(station_ids, measurements, limit))
+
+
 @route('/api/country')
 def country_data():
     country = request.query.name
@@ -34,5 +43,4 @@ def four_o_four_error(code):
 
 
 if __name__ == '__main__':
-    # TODO: change variables to production values
     run(server='paste', host='127.0.0.1', port=8080, debug=True, reloader=True)
