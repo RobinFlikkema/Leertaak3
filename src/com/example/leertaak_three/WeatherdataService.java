@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
  * The constructor of this class takes a ServerSocket which is used to listen to new connections.
  */
 class WeatherdataService {
+    // The port used for receiving weatherdata
+    private static final int SERVER_PORT = 7789;
 
     WeatherdataService(ServerSocket serverSocket)
             throws IOException {
@@ -51,5 +53,10 @@ class WeatherdataService {
             Socket socket = serverSocket.accept();
             threadPools[0].submit(new WeatherdataReceiverThread(socket, processingQueue));
         }
+    }
+
+    public static void main(String[] args)
+            throws IOException {
+        new WeatherdataService(new ServerSocket(SERVER_PORT));
     }
 }
