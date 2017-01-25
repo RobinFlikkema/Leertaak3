@@ -39,41 +39,6 @@ class Measurement {
         return this.values[pos];
     }
 
-    // TODO: This shouldn't be needed anymore
-    String[] getValuesForCSV(){
-        String timestamp = null;
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        try {
-            Date date = format.parse(values[1] + " " + values[2]);
-            long timestampAsLong = date.getTime() / 1000;
-            timestamp = String.valueOf(timestampAsLong);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        String[] ReturnArray = new String[18];
-        ReturnArray[0] = values[0];
-        ReturnArray[1] = timestamp;
-        ReturnArray[2] = values[3];
-        ReturnArray[3] = values[4];
-        ReturnArray[4] = values[5];
-        ReturnArray[5] = values[6];
-        ReturnArray[6] = values[7];
-        ReturnArray[7] = values[8];
-        ReturnArray[8] = values[9];
-        ReturnArray[9] = values[10];
-        ReturnArray[10] = values[11];
-        ReturnArray[11] = values[12];
-        ReturnArray[12] = values[13];
-        ReturnArray[13] = values[14];
-        ReturnArray[14] = values[15];
-        ReturnArray[15] = values[16];
-        ReturnArray[16] = values[17];
-        ReturnArray[17] = values[18];
-
-        return ReturnArray;
-    }
-
     String newGetValuesForCSV(){
         String timestamp = null;
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
