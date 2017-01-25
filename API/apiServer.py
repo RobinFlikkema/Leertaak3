@@ -16,6 +16,9 @@ def station_data():
     limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
 
+    if st_id == '':
+        return json_dumps({"error": {"code": "-6", "message": "Station ID missing."}})
+
     return json_dumps(m.get_station_data(st_id, measurements, time_from, time_to, limit))
 
 
@@ -27,6 +30,9 @@ def stations_data():
     limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
 
+    if station_ids == '':
+        return json_dumps({"error": {"code": "-6", "message": "Station ID missing."}})
+
     return json_dumps(m.get_stations_data(station_ids, measurements, time_from, time_to, limit))
 
 
@@ -37,6 +43,9 @@ def country_data():
     time_to = 0 if request.query.time_to is "" else request.query.time_to
     limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
+
+    if name == '':
+        return json_dumps({"error": {"code": "-5", "message": "Country name missing."}})
 
     return json_dumps(m.get_country_data(name, measurements, time_from, time_to, limit))
 
