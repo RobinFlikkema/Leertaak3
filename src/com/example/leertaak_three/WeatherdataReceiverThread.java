@@ -14,7 +14,7 @@ class WeatherdataReceiverThread implements Runnable {
     private BlockingQueue<Measurement> queue;
 
     WeatherdataReceiverThread(Socket socket, BlockingQueue<Measurement> queue) {
-        System.out.println("new Thread");   //TODO : REMOVE THIS
+//        System.out.println("new Thread");   //TODO : REMOVE THIS
         try {
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
@@ -42,7 +42,7 @@ class WeatherdataReceiverThread implements Runnable {
                     weatherdata.addLine(line);
 
                     if (line.contains("</WEATHERDATA>")) {
-                        System.out.println("XML Closed");
+//                        System.out.println("XML Closed");
                         for (Measurement measurement : weatherdata.getMeasurements()) {
                             this.queue.put(measurement);
                         }
