@@ -22,19 +22,23 @@ def station_data():
 @route('/api/stations')
 def stations_data():
     station_ids = request.query.stations
+    time_from = 0 if request.query.time_from is "" else request.query.time_from
+    time_to = 0 if request.query.time_to is "" else request.query.time_to
     limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
 
-    return json_dumps(m.get_stations_data(station_ids, measurements, limit))
+    return json_dumps(m.get_stations_data(station_ids, measurements, time_from, time_to, limit))
 
 
 @route('/api/country')
 def country_data():
     country = request.query.name
+    time_from = 0 if request.query.time_from is "" else request.query.time_from
+    time_to = 0 if request.query.time_to is "" else request.query.time_to
     limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
 
-    return json_dumps(m.get_country_data(country, measurements, limit))
+    return json_dumps(m.get_country_data(country, measurements, time_from, time_to, limit))
 
 
 @error(404)

@@ -11,7 +11,7 @@ class Conn:
 
     def __init__(self):
         # TODO: production value
-        # self.prefix = "./API"
+        # self.prefix = "./API/"
         self.prefix = ""
 
     def open(self):
