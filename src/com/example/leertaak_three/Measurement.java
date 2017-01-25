@@ -39,6 +39,7 @@ class Measurement {
         return this.values[pos];
     }
 
+    //TODO: We can probbly refactor this
     String newGetValuesForCSV(){
         String timestamp = null;
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -98,6 +99,4 @@ class Measurement {
         }
         return -1;
     }
-
-
 }
