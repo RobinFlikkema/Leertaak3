@@ -5,7 +5,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Robin on 15-12-2016.
  */
-public class QueueWatcher implements Runnable {
+class QueueWatcher implements Runnable {
     private BlockingQueue<Measurement> processingQueue;
     private BlockingQueue<Measurement> storageQueue;
 

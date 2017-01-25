@@ -6,7 +6,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Robin on 17-12-2016.
  */
-public class InserterThread implements Runnable {
+class InserterThread implements Runnable {
     private CSV CSV;
     private BlockingQueue<Measurement> queue;
 

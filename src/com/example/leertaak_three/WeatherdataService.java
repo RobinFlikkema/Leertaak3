@@ -35,11 +35,8 @@ class WeatherdataService {
         threadPools[2] = Executors.newFixedThreadPool(1);               // Add Threads to Inserter threadpool
         threadPools[3] = Executors.newFixedThreadPool(1);               // Add Threads to Counter threadpool
 
-        // TODO: REMOVE THIS PARTIALLY
-        threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue, stationList));//
-        for (int i = 0; i < 1; i++) {
-            threadPools[2].submit(new InserterThread(storageQueue));
-        }
+        threadPools[1].submit(new ProcessorThread(processingQueue, storageQueue, stationList));
+        threadPools[2].submit(new InserterThread(storageQueue));
 
         // TODO: DIT KAN ER LANGZAMERHAND OOK UIT TOCH?
         threadPools[3].submit(new QueueWatcher(processingQueue, storageQueue));  // DIT IS TIJDELIJK ofzo!

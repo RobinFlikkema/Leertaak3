@@ -5,7 +5,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Robin on 17-12-2016.
  */
-public class ProcessorThread implements Runnable {
+class ProcessorThread implements Runnable {
     private BlockingQueue<Measurement> processingQueue;
     private BlockingQueue<Measurement> storageQueue;
     private Station[] stations;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Robin on 21-12-2016.
  */
-public class Station {
+class Station {
     private ArrayList<Measurement> measurements = new ArrayList<>();
 
     Station() {
