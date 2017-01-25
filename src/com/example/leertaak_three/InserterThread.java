@@ -17,7 +17,7 @@ class InserterThread implements Runnable {
 
     @Override public void run() {
         while (true) {
-            ArrayList<Measurement> listOfMeasurements = new ArrayList<Measurement>();
+            ArrayList<Measurement> listOfMeasurements = new ArrayList<>();
             try {
                     for (int i = 0; i < 100; i++) {
                         listOfMeasurements.add(queue.take());
@@ -25,8 +25,6 @@ class InserterThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            System.out.println("Queue");
             CSV.insertMeasurements(listOfMeasurements);
         }
     }
