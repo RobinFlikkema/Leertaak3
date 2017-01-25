@@ -3,6 +3,7 @@ import datetime
 
 
 class Measurements:
+
     def __init__(self):
         self.measurements_pos = dict(temp=2, dew=3, air_station=4, air_sea=5, vis=6, wind=7, par=8, snow_fall=9,
                                      froze=10, rain=11, snow=12, hail=13, tun=14, tor=15, cloud=16, wind_dir=17)
@@ -24,13 +25,15 @@ class Measurements:
         data = {'station': []}
         data['station'].append({'id': '{}'.format(station), 'longitude': '{}'.format(station_data[1]),
                                 'latitude': '{}'.format(station_data[2]), 'measurement': []})
+
+        if time_from != 0:
+            date = time_from
+        else:
+            date = datetime.datetime.timestamp(datetime.datetime.now())
+
         counter = 0
         while counter < limit:
             try:
-                if time_from != 0:
-                    date = time_from
-                else:
-                    date = datetime.datetime.timestamp(datetime.datetime.now())
                 if time_to != 0:
                     if date >= time_to:
                         break
@@ -40,6 +43,8 @@ class Measurements:
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
                     for line in reversed(list(csv)):
                         counter += 1
+                        if counter == limit:
+                            break
                         value = line.strip().split(",")
                         if int(value[0]) == station:
                             for i in range(len(measurements)):
@@ -73,13 +78,14 @@ class Measurements:
                     # TODO: maybe return error
                     station_ids.remove(st_id)
 
+        if time_from != 0:
+            date = time_from
+        else:
+            date = datetime.datetime.timestamp(datetime.datetime.now())
+
         counter = 0
         while counter < limit:
             try:
-                if time_from != 0:
-                    date = time_from
-                else:
-                    date = datetime.datetime.timestamp(datetime.datetime.now())
                 if time_to != 0:
                     if date >= time_to:
                         break
@@ -89,6 +95,8 @@ class Measurements:
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
                     for line in reversed(list(csv)):
                         counter += 1
+                        if counter == limit:
+                            break
                         value = line.strip().split(",")
                         for i in range(len(measurements)):
                             if station_ids:
@@ -141,13 +149,14 @@ class Measurements:
         stations = []
         data = {'station': []}
 
+        if time_from != 0:
+            date = time_from
+        else:
+            date = datetime.datetime.timestamp(datetime.datetime.now())
+
         counter = 0
         while counter < limit:
             try:
-                if time_from != 0:
-                    date = time_from
-                else:
-                    date = datetime.datetime.timestamp(datetime.datetime.now())
                 if time_to != 0:
                     if date >= time_to:
                         break
@@ -156,6 +165,8 @@ class Measurements:
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
                     for line in reversed(list(csv)):
                         counter += 1
+                        if counter == limit:
+                            break
                         value = line.strip().split(",")
                         for i in range(len(measurements)):
                             for j in range(len(stations_data)):
