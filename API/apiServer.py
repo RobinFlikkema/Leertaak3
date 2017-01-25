@@ -10,18 +10,18 @@ m = measureData.Measurements()
 
 @route('/api/station')
 def station_data():
-    station = request.query.id
+    st_id = request.query.st_id
     time_from = 0 if request.query.time_from is "" else request.query.time_from
     time_to = 0 if request.query.time_to is "" else request.query.time_to
     limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
 
-    return json_dumps(m.get_station_data(station, measurements, time_from, time_to, limit))
+    return json_dumps(m.get_station_data(st_id, measurements, time_from, time_to, limit))
 
 
 @route('/api/stations')
 def stations_data():
-    station_ids = request.query.stations
+    station_ids = request.query.station_ids
     time_from = 0 if request.query.time_from is "" else request.query.time_from
     time_to = 0 if request.query.time_to is "" else request.query.time_to
     limit = 20 if request.query.limit is "" else request.query.limit
@@ -32,13 +32,13 @@ def stations_data():
 
 @route('/api/country')
 def country_data():
-    country = request.query.name
+    name = request.query.name
     time_from = 0 if request.query.time_from is "" else request.query.time_from
     time_to = 0 if request.query.time_to is "" else request.query.time_to
     limit = 20 if request.query.limit is "" else request.query.limit
     measurements = ['temp', 'wind', 'wind_dir']
 
-    return json_dumps(m.get_country_data(country, measurements, time_from, time_to, limit))
+    return json_dumps(m.get_country_data(name, measurements, time_from, time_to, limit))
 
 
 @error(404)
