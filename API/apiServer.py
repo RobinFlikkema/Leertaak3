@@ -51,10 +51,10 @@ def country_data():
 
 
 @error(404)
-def four_o_four_error(code):
+def four_o_four_error(_):
     return json_dumps({"error": {"code": "-1", "message": "Invalid method."}})
 
 
 if __name__ == '__main__':
-    # TODO: disable debugging and reloader in production
+    # TODO: disable debugging and re-loader in production
     run(server='paste', host='127.0.0.1', port=8080, debug=True, reloader=True)
