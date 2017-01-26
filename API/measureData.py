@@ -4,8 +4,6 @@ import datetime
 
 class Measurements:
 
-    # TODO: test functions (time_from and time_to)
-
     def __init__(self):
         self.measurements_pos = dict(temp=2, dew=3, air_station=4, air_sea=5, vis=6, wind=7, par=8, snow_fall=9,
                                      froze=10, rain=11, snow=12, hail=13, tun=14, tor=15, cloud=16, wind_dir=17)
