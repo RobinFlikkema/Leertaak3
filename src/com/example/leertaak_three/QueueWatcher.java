@@ -11,19 +11,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 class QueueWatcher implements Runnable {
     private BlockingQueue<Measurement> processingQueue;
-    private BlockingQueue<Measurement> storageQueue;
     private AtomicInteger counter;
 
-    QueueWatcher(BlockingQueue<Measurement> processingQueue, BlockingQueue<Measurement> storageQueue, AtomicInteger counter) {
+    QueueWatcher(BlockingQueue<Measurement> processingQueue, AtomicInteger counter) {
         this.processingQueue = processingQueue;
-        this.storageQueue = storageQueue;
         this.counter = counter;
     }
 
     @Override public void run() {
         Date now = new java.util.Date();
         long PreviousCounter = 0;
-        long anotherCounter = 0;
 
         while (true) {
             try {
@@ -37,7 +34,7 @@ class QueueWatcher implements Runnable {
             System.out.println();
             System.out.println("Weatherdata handled per second: " + (this.counter.get() - PreviousCounter));
             System.out.println("Weatherdata handled: " + this.counter.get());
-            System.out.println("Grootte van queues: " + processingQueue.size() + ", " + storageQueue.size());
+            System.out.println("Grootte van queue: " + processingQueue.size());
             System.out.println("=============================================");
             PreviousCounter = this.counter.get();
         }

@@ -20,7 +20,6 @@ class CSV {
             fileLocation = date + ".csv";
         }
 
-
         try (FileWriter pw = new FileWriter(fileLocation, true)) {
             for (Measurement measurement : measurements) {
                 pw.append(measurement.newGetValuesForCSV()).append("\n");

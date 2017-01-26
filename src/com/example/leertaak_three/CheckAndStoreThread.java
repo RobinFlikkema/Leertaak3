@@ -1,31 +1,36 @@
 package com.example.leertaak_three;
 
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Robin on 17-12-2016.
  */
-class ProcessorThread implements Runnable {
-    private BlockingQueue<Measurement> processingQueue;
-    private BlockingQueue<Measurement> storageQueue;
+class CheckAndStoreThread implements Runnable {
+    private CSV CSV;
+    private BlockingQueue<Measurement> queue;
     private Station[] stations;
 
-    ProcessorThread(BlockingQueue<Measurement> processingQueue, BlockingQueue<Measurement> storageQueue, Station[] stations) {
-        this.processingQueue = processingQueue;
-        this.storageQueue = storageQueue;
+    CheckAndStoreThread(BlockingQueue<Measurement> queue, Station[] stations) {
+        this.CSV = new CSV();
+        this.queue = queue;
         this.stations = stations;
     }
 
     @Override public void run() {
         while (true) {
-                try {
-                    Measurement measurement = processingQueue.take();
-//                    measurement = this.checkMeasurement(measurement);
-//                    stations[measurement.getStationNumber()].addMeasurement(measurement);
-                    storageQueue.put(measurement);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            ArrayList<Measurement> listOfMeasurements = new ArrayList<>();
+            try {
+                    for (int i = 0; i < 10000; i++) {
+                        Measurement measurement = queue.take();
+                        //measurement = this.checkMeasurement(measurement);
+                        //stations[measurement.getStationNumber()].addMeasurement(measurement);
+                        //listOfMeasurements.add(measurement);
+                    }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            CSV.insertMeasurements(listOfMeasurements);
         }
     }
 

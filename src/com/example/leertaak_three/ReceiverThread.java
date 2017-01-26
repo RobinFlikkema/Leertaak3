@@ -1,23 +1,25 @@
 package com.example.leertaak_three;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Robin on 8-12-2016.
  */
-class WeatherdataReceiverThread implements Runnable {
+class ReceiverThread implements Runnable {
     private BufferedReader bufferedReader = null;
     private BlockingQueue<Measurement> queue;
     private AtomicInteger counter;
 
-    WeatherdataReceiverThread(Socket socket, BlockingQueue<Measurement> queue, AtomicInteger counter) {
+    ReceiverThread(Socket socket, BlockingQueue<Measurement> queue, AtomicInteger counter) {
         try {
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream()), "UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
