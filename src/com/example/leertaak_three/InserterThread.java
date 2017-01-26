@@ -19,7 +19,7 @@ class InserterThread implements Runnable {
         while (true) {
             ArrayList<Measurement> listOfMeasurements = new ArrayList<>();
             try {
-                    for (int i = 0; i < 100; i++) {
+                    for (int i = 0; i < 10000; i++) {
                         listOfMeasurements.add(queue.take());
                     }
             } catch (InterruptedException e) {

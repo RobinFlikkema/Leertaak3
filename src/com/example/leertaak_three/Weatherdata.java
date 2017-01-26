@@ -13,10 +13,10 @@ class Weatherdata {
     }
 
     void addLine(String line){
-        if (!line.contains("<?xml") && !line.contains("WEATHERDATA")) {
-            if (line.contains("<MEASUREMENT>")){
+        if (!line.equals("<?xml version=\"1.0\"?>") && !line.equals("<WEATHERDATA>") && !line.equals("</WEATHERDATA>")) {
+            if (line.equals("\t<MEASUREMENT>")){
                 measurement = new Measurement();
-            } else if (line.contains("</MEASUREMENT>")){
+            } else if (line.equals("\t</MEASUREMENT>")){
                 weather_data.add(measurement);
             } else {
                 measurement.addValue(line.trim());

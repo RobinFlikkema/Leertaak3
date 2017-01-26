@@ -21,17 +21,21 @@ class Measurement {
             values[i] = stripTags(line);
         } else {
             String strippedLine = stripTags(line);
-            for (int j = 0; j < 6; j++ ){
-                values[i+j] = String.valueOf(strippedLine.charAt(j));
+            for (int j = 0; j < 6; j++) {
+                try {
+                    values[i + j] = String.valueOf(strippedLine.charAt(j));
+                } catch (StringIndexOutOfBoundsException e) {
+                    values[i+j] = "0";
+                }
             }
         }
     }
 
-    int getStationNumber(){
+    int getStationNumber() {
         return Integer.valueOf(this.getValue(0));
     }
 
-    double getTemperature(){
+    double getTemperature() {
         return Double.valueOf(this.getValue(3));
     }
 
@@ -40,12 +44,12 @@ class Measurement {
     }
 
     //TODO: We can probbly refactor this
-    String newGetValuesForCSV(){
+    String newGetValuesForCSV() {
         String timestamp = null;
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date date = format.parse(values[1] + " " + values[2]);
-            long timestampAsLong = date.getTime() / 1000;
+            long timestampAsLong = date.getTime() / 1000 + 3600;
             timestamp = String.valueOf(timestampAsLong);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -77,7 +81,7 @@ class Measurement {
         return Double.valueOf(this.values[pos]);
     }
 
-    void setValue(int pos, String value){
+    void setValue(int pos, String value) {
         values[pos] = value;
     }
 
@@ -89,10 +93,10 @@ class Measurement {
         return input.replaceAll("<.*?>", "");
     }
 
-    int valueIsMissing(){
+    int valueIsMissing() {
         int index = 0;
         for (String value : values) {
-            if (Objects.equals(value, "")){
+            if (Objects.equals(value, "")) {
                 return index;
             }
             index++;

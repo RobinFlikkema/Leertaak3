@@ -36,29 +36,19 @@ class WeatherdataReceiverThread implements Runnable {
     // TODO: Needs refactoring
     private Boolean receiveWeatherdata() {
         try {
-//            int counter = 0;
             Weatherdata weatherdata = new Weatherdata();
             while (true) {
                 String line = bufferedReader.readLine();
                 if (line != null) {
                     weatherdata.addLine(line);
-
                     this.counter.getAndIncrement();
-//                    System.out.println("++" + this.counter);
-
-                    if (line.contains("</WEATHERDATA>")) {
+                    if (line.equals("</WEATHERDATA>")) {
                         // <Weatherdata> was just closed. Put it in the processing queue and create a new Weatherdata object for the next <Weatherdata>
                         for (Measurement measurement : weatherdata.getMeasurements()) {
                             this.queue.put(measurement);
                         }
                         weatherdata = new Weatherdata();
-                        //TODO: Waar gebruiken we deze counter ook alweer voor?
-//                        counter++;
-//                        if (counter > 9) {
-//                            return true;
-//                        }
                     }
-
                 } else {
                     break;
                 }

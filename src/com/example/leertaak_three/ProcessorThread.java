@@ -18,11 +18,10 @@ class ProcessorThread implements Runnable {
 
     @Override public void run() {
         while (true) {
-                // TODO: Some form of map which stores the last values
                 try {
                     Measurement measurement = processingQueue.take();
-                    measurement = this.checkMeasurement(measurement);
-                    stations[measurement.getStationNumber()].addMeasurement(measurement);
+//                    measurement = this.checkMeasurement(measurement);
+//                    stations[measurement.getStationNumber()].addMeasurement(measurement);
                     storageQueue.put(measurement);
                 } catch (Exception e) {
                     e.printStackTrace();
