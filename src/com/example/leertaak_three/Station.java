@@ -12,7 +12,7 @@ class Station {
 
     }
 
-    public void addMeasurement(Measurement measurement) {
+    void addMeasurement(Measurement measurement) {
         if (measurements.size() >= 30) {
             measurements.remove(0);
         }

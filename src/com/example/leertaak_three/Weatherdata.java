@@ -8,7 +8,6 @@ import java.util.ArrayList;
 class Weatherdata {
     private Measurement measurement = new Measurement();
     private ArrayList<Measurement> weather_data = new ArrayList<>();
-    private CSV db = new CSV();
 
     Weatherdata(){
     }

@@ -1,5 +1,6 @@
 package com.example.leertaak_three;
 
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,6 +9,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * WeatherdataService
@@ -17,6 +19,8 @@ import java.util.concurrent.Executors;
 class WeatherdataService {
     // The port used for receiving weatherdata
     private static final int SERVER_PORT = 7789;
+    // This long is used to count the amount of handled Weatherdata objects
+    AtomicInteger weatherdataCounter = new AtomicInteger(0);
 
     private WeatherdataService(ServerSocket serverSocket)
             throws IOException {
@@ -24,6 +28,7 @@ class WeatherdataService {
         BlockingQueue<Measurement> processingQueue = new ArrayBlockingQueue<>(10000);
         // This queue hold Measurements waiting to be stored on the disk
         BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(10000);
+
         // This Station Array is used to hold all Stations. This is later used to calculate missing values.
         Station[] stationList = new Station[1000000];
         Arrays.fill(stationList, new Station());
@@ -39,7 +44,7 @@ class WeatherdataService {
         threadPools[2].submit(new InserterThread(storageQueue));
 
         // TODO: DIT KAN ER LANGZAMERHAND OOK UIT TOCH?
-        threadPools[3].submit(new QueueWatcher(processingQueue, storageQueue));  // DIT IS TIJDELIJK ofzo!
+        threadPools[3].submit(new QueueWatcher(processingQueue, storageQueue, weatherdataCounter));  // DIT IS TIJDELIJK ofzo!
         // Needs to count the amount of requests that were handled
 
 
@@ -48,7 +53,7 @@ class WeatherdataService {
         while (true) {
             // This accepts connections and spawns a thread per connection. The thread is automatically deleted / reused when it dies.
             Socket socket = serverSocket.accept();
-            threadPools[0].submit(new WeatherdataReceiverThread(socket, processingQueue));
+            threadPools[0].submit(new WeatherdataReceiverThread(socket, processingQueue, weatherdataCounter));
         }
     }
 
