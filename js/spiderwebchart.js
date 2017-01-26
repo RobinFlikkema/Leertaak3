@@ -8,7 +8,7 @@ $(function () {
         },
 
         title: {
-            text: 'Budget vs spending'
+            text: ""
         },
 
         pane: {

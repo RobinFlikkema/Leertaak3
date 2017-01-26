@@ -9,6 +9,7 @@
 
     <!-- Bootstrap -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -16,8 +17,8 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script src="http://code.highcharts.com/stock/highstock.js"></script>
-    <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
 
@@ -26,23 +27,72 @@
 
 <div class="jumbotron text-center" style="background-color: #00247d">
     <h1 style="display: inline">
-        <span style="color: #ffffff; font-family: 'Lucida Fax', serif">New Zealand energy corp</span>
+        <span class="title-text">New Zealand energy corp</span>
+        <!--<div style="width: 100%; border: 5px solid red"></div>-->
     </h1>
+
 </div>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">Averages</div>
                 <div class="panel-body">
                     <div id="stockchartcontainer"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">Wind direction</div>
                 <div class="panel-body">
                     <div id="spiderwebchartcontainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Top table</div>
+                <div class="panel-body">
+                    <table id="top" style="border-collapse: collapse; border: 1px solid black">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>station</th>
+                            <th>temperature</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -58,3 +108,6 @@
 </html>
 <script src="js/stockchart.js"></script>
 <script src="js/spiderwebchart.js"></script>
+<script src="js/Station.js"></script>
+<script src="js/Measurement.js"></script>
+<script src="js/ajaxchart.js"></script>
