@@ -5,10 +5,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Robin on 8-12-2016.
@@ -27,33 +25,33 @@ class ReceiverThread implements Runnable {
     }
 
     @Override public void run() {
-        while (true) {
-            if (!this.receiveWeatherdata()) {
-                break;
-            }
-        }
+        this.receiveWeatherdata();
     }
 
     // TODO: Needs refactoring
-    private Boolean receiveWeatherdata() {
+    private void receiveWeatherdata() {
         try {
             ArrayList<String> incomingList = new ArrayList<>();
+            int lineCounter = 0;
             while (true) {
                 String line = bufferedReader.readLine();
                 if (line != null) {
                     incomingList.add(line);
-                    if (line.equals("</WEATHERDATA>")) {
+                    if (lineCounter > 161) {
                         incomingList.add(line);
                         queue.add(incomingList);
+
                         incomingList = new ArrayList<>();
+                        lineCounter = 0;
+                    } else {
+                        lineCounter++;
                     }
                 } else {
                     break;
                 }
             }
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
-        return false;
     }
 }

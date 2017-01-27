@@ -7,28 +7,21 @@ import java.util.*;
 
 class Measurement {
     private String[] values = new String[19];
+    private int lineCounter = 0;
     private static final String[] index = {"STN", "DATE", "TIME", "TEMP", "DEWP", "STP", "SLP", "VISIB", "WDSP", "PRCP", "SNDP", "CLDC", "WNDDIR", "FRSHTT"};
 
     Measurement() {
     }
 
     void addValue(String line) {
-        int i;
-        for (i = 0; i < index.length; i++)
-            if (line.contains(index[i])) break;
+        line = stripTags(line);
 
-        if (i != 13) {
-            values[i] = stripTags(line);
-        } else {
-            String strippedLine = stripTags(line);
-            for (int j = 0; j < 6; j++) {
-                try {
-                    values[i + j] = String.valueOf(strippedLine.charAt(j));
-                } catch (StringIndexOutOfBoundsException e) {
-                    values[i+j] = "0";
-                }
-            }
+        if (line.isEmpty()){
+            line = "000000";
         }
+
+        this.values[this.lineCounter] = line;
+        this.lineCounter++;
     }
 
     int getStationNumber() {

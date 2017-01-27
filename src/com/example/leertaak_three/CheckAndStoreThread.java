@@ -22,6 +22,7 @@ class CheckAndStoreThread implements Runnable {
             ArrayList<Measurement> incomingListOfMeasurements = new ArrayList<>();
             ArrayList<Measurement> outgoingListOfMeasurements = new ArrayList<>();
 
+            if (queue.size() > 1000){
             queue.drainTo(incomingListOfMeasurements, 1000);
             for (Measurement measurement : incomingListOfMeasurements){
                 measurement = this.checkMeasurement(measurement);
@@ -29,6 +30,13 @@ class CheckAndStoreThread implements Runnable {
                 outgoingListOfMeasurements.add(measurement);
             }
             CSV.insertMeasurements(outgoingListOfMeasurements);
+        } else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -41,26 +41,30 @@ class ParserThread implements Runnable {
             while (true) {
 
                 //ArrayList<String> take = incomingQueue.take();
-                ArrayList<ArrayList<String>> newList = new ArrayList<>();
-                this.incomingQueue.drainTo(newList, 1000);
+                if (incomingQueue.size() > 1000) {
+                    ArrayList<ArrayList<String>> newList = new ArrayList<>();
+                    this.incomingQueue.drainTo(newList, 1000);
 
-                for (ArrayList<String> itemTakenFromIncomingQueue : newList) {
-                    this.counter.getAndIncrement();
-                    for (String weatherdataString : itemTakenFromIncomingQueue) {
-                        if (weatherdataString.equals("</WEATHERDATA>")) {
-                            // <Weatherdata> was just closed. Put it in the processing queue and create a new Weatherdata object for the next <Weatherdata>
-                            for (Measurement measurement : weatherdata.getMeasurements()) {
-                                this.outgoingQueue.put(measurement);
+                    for (ArrayList<String> itemTakenFromIncomingQueue : newList) {
+                        this.counter.getAndIncrement();
+                        for (String weatherdataString : itemTakenFromIncomingQueue) {
+                            if (weatherdataString.equals("</WEATHERDATA>")) {
+                                // <Weatherdata> was just closed. Put it in the processing queue and create a new Weatherdata object for the next <Weatherdata>
+                                for (Measurement measurement : weatherdata.getMeasurements()) {
+                                    this.outgoingQueue.put(measurement);
+                                }
+                                weatherdata = new Weatherdata();
+                            } else {
+                                weatherdata.addLine(weatherdataString);
+
                             }
-                            weatherdata = new Weatherdata();
-                        } else {
-                            weatherdata.addLine(weatherdataString);
-
                         }
                     }
+                } else {
+                    Thread.sleep(1000);
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception | Error e) {
             return false;
         }
     }
