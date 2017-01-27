@@ -1,5 +1,7 @@
 package com.example.leertaak_three;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ class Measurement {
     Measurement() {
     }
 
+    // TODO: We can probably refactor this to be in a seperate Parser thingy
     void addValue(String line) {
         line = stripTags(line);
 
@@ -80,6 +83,7 @@ class Measurement {
         return Arrays.toString(values);
     }
 
+    // TODO: This is bad! Use substring!
     private String stripTags(String input) {
         return input.replaceAll("<.*?>", "").trim();
     }
