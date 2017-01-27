@@ -5,6 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ *
+ *
+ * @author Robin
+ */
 class Measurement {
     private final String[] values = new String[19];
     private int lineCounter = 0;
@@ -91,11 +96,13 @@ class Measurement {
         values[pos] = value;
     }
 
+    // TODO: Are we even using this?
     public String toString() {
         return Arrays.toString(values);
     }
 
     // TODO: This is bad! Use substring!
+    // TODO: If we aren't going to use SubString, We need to use a Matcher with Pattern!
     private String stripTags(String input) {
         return input.replaceAll("<.*?>", "").trim();
     }
