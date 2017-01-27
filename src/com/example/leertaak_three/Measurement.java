@@ -6,9 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 class Measurement {
-    private String[] values = new String[19];
+    private final String[] values = new String[19];
     private int lineCounter = 0;
-    private static final String[] index = {"STN", "DATE", "TIME", "TEMP", "DEWP", "STP", "SLP", "VISIB", "WDSP", "PRCP", "SNDP", "CLDC", "WNDDIR", "FRSHTT"};
 
     Measurement() {
     }
@@ -16,7 +15,7 @@ class Measurement {
     void addValue(String line) {
         line = stripTags(line);
 
-        if (line.isEmpty()){
+        if (line.isEmpty()) {
             line = "000000";
         }
 

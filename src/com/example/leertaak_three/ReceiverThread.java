@@ -13,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
  */
 class ReceiverThread implements Runnable {
     private BufferedReader bufferedReader = null;
-    private BlockingQueue<ArrayList<String>> queue;
+    private final BlockingQueue<ArrayList<String>> queue;
 
     ReceiverThread(Socket socket, BlockingQueue<ArrayList<String>> queue) {
         try {

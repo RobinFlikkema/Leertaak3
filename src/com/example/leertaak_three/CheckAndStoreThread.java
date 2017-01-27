@@ -7,9 +7,9 @@ import java.util.concurrent.BlockingQueue;
  * Created by Robin on 17-12-2016.
  */
 class CheckAndStoreThread implements Runnable {
-    private CSV CSV;
-    private BlockingQueue<Measurement> queue;
-    private Station[] stations;
+    private final CSV CSV;
+    private final BlockingQueue<Measurement> queue;
+    private final Station[] stations;
 
     CheckAndStoreThread(BlockingQueue<Measurement> queue, Station[] stations) {
         this.CSV = new CSV();
@@ -18,6 +18,7 @@ class CheckAndStoreThread implements Runnable {
     }
 
     @Override public void run() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             ArrayList<Measurement> incomingListOfMeasurements = new ArrayList<>();
             ArrayList<Measurement> outgoingListOfMeasurements = new ArrayList<>();

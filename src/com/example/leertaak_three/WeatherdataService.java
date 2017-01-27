@@ -23,7 +23,7 @@ class WeatherdataService {
         BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(50000, true);
         // This queue hold Measurements waiting to be processed (checked for missing values etc)
         BlockingQueue<ArrayList<String>> incomingQueue = new ArrayBlockingQueue<>(50000, true);
-        AtomicInteger weatherdataCounter = new AtomicInteger(0);
+        AtomicInteger parseCounter = new AtomicInteger(0);
 
         // This Station Array is used to hold all Stations. This is later used to calculate missing values.
         Station[] stationList = new Station[1000000];
@@ -36,10 +36,10 @@ class WeatherdataService {
         threadPools2[0] = Executors.newScheduledThreadPool(1);               // Add Threads to Counter threadpool
         threadPools[4] = Executors.newFixedThreadPool(75);               // Add Threads to
 
-        threadPools2[0].scheduleAtFixedRate(new QueueWatcher(storageQueue, incomingQueue, weatherdataCounter), 0, 10, TimeUnit.SECONDS);
+        threadPools2[0].scheduleAtFixedRate(new QueueWatcher(storageQueue, incomingQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
         threadPools[2].submit(new CheckAndStoreThread(storageQueue, stationList));
-        threadPools[4].submit(new ParserThread(storageQueue, weatherdataCounter, incomingQueue));
-        threadPools[4].submit(new ParserThread(storageQueue, weatherdataCounter, incomingQueue));
+        threadPools[4].submit(new ParserThread(storageQueue, parseCounter, incomingQueue));
+        threadPools[4].submit(new ParserThread(storageQueue, parseCounter, incomingQueue));
 
 
         // Loop to handle all incoming connections.

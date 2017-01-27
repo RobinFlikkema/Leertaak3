@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Robin on 21-12-2016.
  */
 class Station {
-    private ArrayList<Measurement> measurements = new ArrayList<>();
+    private final ArrayList<Measurement> measurements = new ArrayList<>();
 
     Station() {
 

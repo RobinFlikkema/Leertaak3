@@ -12,7 +12,7 @@ class CSV {
 
     void insertMeasurements(ArrayList<Measurement> measurements) {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String fileLocation = "";
+        String fileLocation;
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("linux")) {
             fileLocation = "/mnt/csv-storage/" + date + ".csv";
