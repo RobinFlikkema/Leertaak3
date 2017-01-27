@@ -22,7 +22,7 @@ class CSV {
 
         try (FileWriter pw = new FileWriter(fileLocation, true)) {
             for (Measurement measurement : measurements) {
-                pw.append(measurement.getValuesForCSV()).append("\n");
+                pw.append(measurement.getCSVRowAsString()).append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
