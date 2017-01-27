@@ -19,32 +19,30 @@ class CheckAndStoreThread implements Runnable {
 
     @Override public void run() {
         while (true) {
-            ArrayList<Measurement> listOfMeasurements = new ArrayList<>();
-            try {
-                    for (int i = 0; i < 10000; i++) {
-                        Measurement measurement = queue.take();
-                        //measurement = this.checkMeasurement(measurement);
-                        //stations[measurement.getStationNumber()].addMeasurement(measurement);
-                        //listOfMeasurements.add(measurement);
-                    }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            ArrayList<Measurement> incomingListOfMeasurements = new ArrayList<>();
+            ArrayList<Measurement> outgoingListOfMeasurements = new ArrayList<>();
+
+            queue.drainTo(incomingListOfMeasurements, 1000);
+            for (Measurement measurement : incomingListOfMeasurements){
+                measurement = this.checkMeasurement(measurement);
+                stations[measurement.getStationNumber()].addMeasurement(measurement);
+                outgoingListOfMeasurements.add(measurement);
             }
-            CSV.insertMeasurements(listOfMeasurements);
+            CSV.insertMeasurements(outgoingListOfMeasurements);
         }
     }
 
-    private Measurement checkMeasurement(Measurement measurement){
+    private Measurement checkMeasurement(Measurement measurement) {
         int indexOfMissingValue = measurement.valueIsMissing();
         int stationNumber = measurement.getStationNumber();
         double temp = measurement.getTemperature();
-        if (indexOfMissingValue > 0 && 12 > indexOfMissingValue){
+        if (indexOfMissingValue > 0 && 12 > indexOfMissingValue) {
             measurement.setValue(indexOfMissingValue, String.valueOf(stations[stationNumber].getExtrapolatedValue(indexOfMissingValue)));
-        } else if (indexOfMissingValue > 11){
+        } else if (indexOfMissingValue > 11) {
             measurement.setValue(indexOfMissingValue, "0");
         }
-        if (!stations[stationNumber].isTemperaturePlausible(temp)){
-            measurement.setValue(3 ,String.valueOf(stations[stationNumber].getExtrapolatedTemperature()));
+        if (!stations[stationNumber].isTemperaturePlausible(temp)) {
+            measurement.setValue(3, String.valueOf(stations[stationNumber].getExtrapolatedTemperature()));
         }
         return measurement;
     }

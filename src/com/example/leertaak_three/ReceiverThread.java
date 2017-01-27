@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,17 +15,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 class ReceiverThread implements Runnable {
     private BufferedReader bufferedReader = null;
-    private BlockingQueue<Measurement> queue;
-    private AtomicInteger counter;
+    private BlockingQueue<ArrayList<String>> queue;
 
-    ReceiverThread(Socket socket, BlockingQueue<Measurement> queue, AtomicInteger counter) {
+    ReceiverThread(Socket socket, BlockingQueue<ArrayList<String>> queue) {
         try {
             this.bufferedReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream()), "UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
         this.queue = queue;
-        this.counter = counter;
     }
 
     @Override public void run() {
@@ -38,18 +37,15 @@ class ReceiverThread implements Runnable {
     // TODO: Needs refactoring
     private Boolean receiveWeatherdata() {
         try {
-            Weatherdata weatherdata = new Weatherdata();
+            ArrayList<String> incomingList = new ArrayList<>();
             while (true) {
                 String line = bufferedReader.readLine();
                 if (line != null) {
-                    weatherdata.addLine(line);
-                    this.counter.getAndIncrement();
+                    incomingList.add(line);
                     if (line.equals("</WEATHERDATA>")) {
-                        // <Weatherdata> was just closed. Put it in the processing queue and create a new Weatherdata object for the next <Weatherdata>
-                        for (Measurement measurement : weatherdata.getMeasurements()) {
-                            this.queue.put(measurement);
-                        }
-                        weatherdata = new Weatherdata();
+                        incomingList.add(line);
+                        queue.add(incomingList);
+                        incomingList = new ArrayList<>();
                     }
                 } else {
                     break;

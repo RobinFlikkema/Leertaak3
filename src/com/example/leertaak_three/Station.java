@@ -31,7 +31,7 @@ class Station {
         if (measurements.size() > 1) {
             double slope = (measurements.get(0).getValueAsDouble(pos) - measurements.get(measurements.size() - 1).getValueAsDouble(pos)) / (0 - (measurements.size() - 1));
             if (slope > 0) {
-                return measurements.get(measurements.size() - 1).getValueAsDouble(pos) + slope;
+                return Math.round(measurements.get(measurements.size() - 1).getValueAsDouble(pos) + slope * 100) / 100;
             }
         }
         return 0.0;
