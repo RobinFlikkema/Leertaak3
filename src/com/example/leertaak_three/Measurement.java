@@ -59,6 +59,8 @@ class Measurement {
         String timestamp = null;
         try {
             // This is used to generate a UNIX Timestamp from the Date and Time, provided by the weatherstations.
+            // We use / 1000 because date.getTime() returns milliseconds, and we need seconds. The + 3600 is used because
+            // the weatherstations are 1 hour off.
             Date date = format.parse(values[1] + " " + values[2]);
             long timestampAsLong = date.getTime() / 1000 + 3600;
             timestamp = String.valueOf(timestampAsLong);
