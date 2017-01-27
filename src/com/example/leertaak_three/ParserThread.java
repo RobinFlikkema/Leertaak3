@@ -28,16 +28,13 @@ class ParserThread implements Runnable {
 
     @Override public void run() {
         while (true) {
-            if (!this.receiveWeatherdata()) {
-                break;
-            }
+            this.receiveWeatherdata();
         }
     }
 
     // TODO: Needs refactoring
-    private Boolean receiveWeatherdata() {
+    private void receiveWeatherdata() {
         try {
-            Weatherdata weatherdata = new Weatherdata();
             while (true) {
 
                 //ArrayList<String> take = incomingQueue.take();
@@ -46,17 +43,40 @@ class ParserThread implements Runnable {
                     this.incomingQueue.drainTo(newList, 1000);
 
                     for (ArrayList<String> itemTakenFromIncomingQueue : newList) {
+                        // New Weatherdata
                         this.counter.getAndIncrement();
-                        for (String weatherdataString : itemTakenFromIncomingQueue) {
-                            if (weatherdataString.equals("</WEATHERDATA>")) {
-                                // <Weatherdata> was just closed. Put it in the processing queue and create a new Weatherdata object for the next <Weatherdata>
-                                for (Measurement measurement : weatherdata.getMeasurements()) {
-                                    this.outgoingQueue.put(measurement);
-                                }
-                                weatherdata = new Weatherdata();
-                            } else {
-                                weatherdata.addLine(weatherdataString);
+                        int lineCounter = 0;
+                        int measurementLineCounter = 0;
+                        Measurement measurement = new Measurement();
 
+                        for (String line : itemTakenFromIncomingQueue) {
+
+                            // New Line of weatherdata
+                            if (lineCounter < 162) {
+                                // Line does not contain </WEATHERDATA>
+                                if ((lineCounter > 1)) {
+                                    if (measurementLineCounter == 0) {
+                                        // LINE == <MEASUREMENT>
+                                        measurementLineCounter++;
+                                        lineCounter++;
+                                    } else if (measurementLineCounter < 15) {
+                                        // Line is Measurement Value
+                                        measurement.addValue(line);
+                                        measurementLineCounter++;
+                                        lineCounter++;
+                                    } else {
+                                        // LINE == </MEASUREMENT>
+                                        this.outgoingQueue.put(measurement);
+                                        measurement = new Measurement();
+                                        measurementLineCounter = 0;
+                                        lineCounter++;
+                                    }
+                                } else {
+                                    // LINE == <WEATHERDATA> OR LINE == <?XML ...?>
+                                    lineCounter++;
+                                }
+                            } else {
+                                lineCounter = 0;
                             }
                         }
                     }
@@ -65,7 +85,7 @@ class ParserThread implements Runnable {
                 }
             }
         } catch (Exception | Error e) {
-            return false;
+            e.printStackTrace();
         }
     }
 }

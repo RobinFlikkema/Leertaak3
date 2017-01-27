@@ -36,8 +36,7 @@ class Measurement {
         return this.values[pos];
     }
 
-    //TODO: We can probbly refactor this
-    String newGetValuesForCSV() {
+    String getValuesForCSV() {
         String timestamp = null;
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
@@ -58,14 +57,14 @@ class Measurement {
         returnString += values[8] + ",";
         returnString += values[9] + ",";
         returnString += values[10] + ",";
-        returnString += values[11] + ",";
         returnString += values[12] + ",";
         returnString += values[13] + ",";
-        returnString += values[14] + ",";
-        returnString += values[15] + ",";
-        returnString += values[16] + ",";
-        returnString += values[17] + ",";
-        returnString += values[18];
+        returnString += values[11].charAt(0) + ",";
+        returnString += values[11].charAt(1) + ",";
+        returnString += values[11].charAt(2) + ",";
+        returnString += values[11].charAt(3) + ",";
+        returnString += values[11].charAt(4) + ",";
+        returnString += values[11].charAt(5);
 
         return returnString;
     }
@@ -83,7 +82,7 @@ class Measurement {
     }
 
     private String stripTags(String input) {
-        return input.replaceAll("<.*?>", "");
+        return input.replaceAll("<.*?>", "").trim();
     }
 
     int valueIsMissing() {

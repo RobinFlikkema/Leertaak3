@@ -20,9 +20,9 @@ class WeatherdataService {
     private WeatherdataService(ServerSocket serverSocket)
             throws IOException {
         // This queue hold Measurements waiting to be processed (checked for missing values etc)
-        BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(25000, true);
+        BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(50000, true);
         // This queue hold Measurements waiting to be processed (checked for missing values etc)
-        BlockingQueue<ArrayList<String>> incomingQueue = new ArrayBlockingQueue<>(25000, true);
+        BlockingQueue<ArrayList<String>> incomingQueue = new ArrayBlockingQueue<>(50000, true);
         AtomicInteger weatherdataCounter = new AtomicInteger(0);
 
         // This Station Array is used to hold all Stations. This is later used to calculate missing values.
@@ -39,6 +39,8 @@ class WeatherdataService {
         threadPools2[0].scheduleAtFixedRate(new QueueWatcher(storageQueue, incomingQueue, weatherdataCounter), 0, 10, TimeUnit.SECONDS);
         threadPools[2].submit(new CheckAndStoreThread(storageQueue, stationList));
         threadPools[4].submit(new ParserThread(storageQueue, weatherdataCounter, incomingQueue));
+        threadPools[4].submit(new ParserThread(storageQueue, weatherdataCounter, incomingQueue));
+
 
         // Loop to handle all incoming connections.
         //noinspection InfiniteLoopStatement                                     // This is just there for IntelliJ

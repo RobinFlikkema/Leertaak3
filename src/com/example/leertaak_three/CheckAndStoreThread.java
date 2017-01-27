@@ -22,15 +22,16 @@ class CheckAndStoreThread implements Runnable {
             ArrayList<Measurement> incomingListOfMeasurements = new ArrayList<>();
             ArrayList<Measurement> outgoingListOfMeasurements = new ArrayList<>();
 
-            if (queue.size() > 1000){
-            queue.drainTo(incomingListOfMeasurements, 1000);
-            for (Measurement measurement : incomingListOfMeasurements){
-                measurement = this.checkMeasurement(measurement);
-                stations[measurement.getStationNumber()].addMeasurement(measurement);
-                outgoingListOfMeasurements.add(measurement);
-            }
-            CSV.insertMeasurements(outgoingListOfMeasurements);
-        } else {
+            if (queue.size() > 1000) {
+                queue.drainTo(incomingListOfMeasurements, 10000);
+                for (Measurement measurement : incomingListOfMeasurements) {
+                    measurement = this.checkMeasurement(measurement);
+                    stations[measurement.getStationNumber()].addMeasurement(measurement);
+                    outgoingListOfMeasurements.add(measurement);
+                }
+                CSV.insertMeasurements(outgoingListOfMeasurements);
+
+            } else {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -44,10 +45,8 @@ class CheckAndStoreThread implements Runnable {
         int indexOfMissingValue = measurement.valueIsMissing();
         int stationNumber = measurement.getStationNumber();
         double temp = measurement.getTemperature();
-        if (indexOfMissingValue > 0 && 12 > indexOfMissingValue) {
+        if (indexOfMissingValue > 11 && 11 > indexOfMissingValue) {
             measurement.setValue(indexOfMissingValue, String.valueOf(stations[stationNumber].getExtrapolatedValue(indexOfMissingValue)));
-        } else if (indexOfMissingValue > 11) {
-            measurement.setValue(indexOfMissingValue, "0");
         }
         if (!stations[stationNumber].isTemperaturePlausible(temp)) {
             measurement.setValue(3, String.valueOf(stations[stationNumber].getExtrapolatedTemperature()));
