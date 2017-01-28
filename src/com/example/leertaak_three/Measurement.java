@@ -103,6 +103,13 @@ class Measurement {
         return Arrays.toString(values);
     }
 
+    /**
+     * stripTags
+     *
+     * @param input
+     * @param position
+     * @return
+     */
     private String stripTags(String input, int position) {
         String output = null;
         switch (position){
