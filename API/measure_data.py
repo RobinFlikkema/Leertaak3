@@ -7,10 +7,10 @@ class Measurements:
     def __init__(self):
         self.measurements_pos = dict(temp=2, dew=3, air_station=4, air_sea=5, vis=6, wind=7, par=8, snow_fall=9,
                                      froze=10, rain=11, snow=12, hail=13, tun=14, tor=15, cloud=16, wind_dir=17)
-        self.db = database.Conn()
+        self.db = database.Database()
         # TODO: production value
-        # self.prefix = "/home/csv-storage/"
-        self.prefix = ""
+        self.prefix = "/home/csv-storage/"
+        # self.prefix = ""
 
     @staticmethod
     def to_date(timestamp):

@@ -1,7 +1,7 @@
 import sqlite3
 
 
-class Conn:
+class Database:
     """ Open and close connection with database and select station data.
 
     This class provides functions to open and close a database connection
@@ -11,8 +11,8 @@ class Conn:
 
     def __init__(self):
         # TODO: production value
-        # self.prefix = "./API/"
-        self.prefix = ""
+        self.prefix = "/root/API/"
+        # self.prefix = ""
 
     def open(self):
         """ Open a connection with the database.
@@ -22,7 +22,6 @@ class Conn:
             c: Cursor database connection object.
 
         """
-
         conn = sqlite3.connect(self.prefix + 'stations.db')
         c = conn.cursor()
         return conn, c
