@@ -21,7 +21,7 @@ class Measurement {
 
     // TODO: We can probably refactor this to be in a seperate Parser thingy
     void addValue(String line) {
-        line = stripTags(line);
+        line = stripTags(line, this.lineCounter);
 
         if (line.isEmpty()) {
             line = "000000";
@@ -103,10 +103,33 @@ class Measurement {
         return Arrays.toString(values);
     }
 
-    // TODO: This is bad! Use substring!
-    // TODO: If we aren't going to use SubString, We need to use a Matcher with Pattern!
-    private String stripTags(String input) {
-        return input.replaceAll("<.*?>", "").trim();
+    private String stripTags(String input, int position) {
+        String output = null;
+        switch (position){
+            case 0:
+            case 5:
+            case 6:
+                output = input.substring(0, input.length() - 6).substring(7);
+                break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 8:
+            case 9:
+            case 10:
+            case 12:
+                output = input.substring(0, input.length() - 7).substring(8);
+                break;
+            case 7:
+                output = input.substring(0, input.length() - 8).substring(9);
+                break;
+            case 11:
+            case 13:
+                output = input.substring(0, input.length() - 9).substring(10);
+                break;
+        }
+        return output;
     }
 
     int valueIsMissing() {
