@@ -117,6 +117,7 @@ class ApiServer:
         Returns:
             JSON formatted error in case station_ids is not defined.
             JSON formatted measurement data in case at least station_ids is defined.
+            JSON formatted measurement data in case at least stn_limit is defined.
 
         """
 
@@ -125,12 +126,15 @@ class ApiServer:
         time_from = 0 if request.query.time_from is "" else request.query.time_from
         time_to = 0 if request.query.time_to is "" else request.query.time_to
         limit = 20 if request.query.limit is "" else request.query.limit
+        stn_limit = 20 if request.query.limit is "" else request.query.stn_limit
         measurements = ['temp', 'wind', 'wind_dir']
 
-        if station_ids == '':
-            return json_dumps({"error": {"code": "-6", "message": "Station ID missing."}})
+        if station_ids == '' and request.query.limit == '':
+            return json_dumps({"error": {"code": "-6", "message": "Station IDs missing."}})
+        elif request.query.limit == '':
+            return json_dumps({"error": {"code": "-7", "message": "Station limit missing."}})
 
-        return json_dumps(self.m.get_stations_data(station_ids, measurements, time_from, time_to, limit))
+        return json_dumps(self.m.get_stations_data(measurements, time_from, time_to, limit, stn_limit, station_ids))
 
     def country_data(self):
         """ Retrieve and return measurement data based on country name.

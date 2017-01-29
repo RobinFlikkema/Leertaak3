@@ -11,12 +11,8 @@ class Measurements:
     """
 
     def __init__(self):
-        """
-
-        Initialize class with dictionary which contains positions for measurement in the CSV files, a database object
-        and a prefix to the path where the CSV files are stored within the system.
-
-        """
+        # Initialize class with dictionary which contains positions for measurement in the CSV files, a database object
+        # and a prefix to the path where the CSV files are stored within the system.
         self.measurements_pos = dict(temp=2, dew=3, air_station=4, air_sea=5, vis=6, wind=7, par=8, snow_fall=9,
                                      froze=10, rain=11, snow=12, hail=13, tun=14, tor=15, cloud=16, wind_dir=17)
         self.db = database.Database()
@@ -124,7 +120,7 @@ class Measurements:
         else:
             return data
 
-    def get_stations_data(self, measurements, time_from, time_to, limit, station_ids=None):
+    def get_stations_data(self, measurements, time_from, time_to, limit, stn_limit, station_ids=None):
         """ Collect measurement data for the defined stations.
 
         This method is being used to collect data for a defined stations from one or more CSV files.
@@ -133,13 +129,14 @@ class Measurements:
         The method returns a JSON string containing information about the stations and the measurements.
 
         Args:
-            station_ids: a list of IDs of stations to collect the measurements from.
             measurements: a list of measurements to collect data for.
             time_from: a UNIX timestamp which is used to define the start of the time period within which
             measurement data has to be collected.
             time_to: a UNIX timestamp which is used to define the end of the time period within which
             measurement data has to be collected.
             limit: the maximum amount of measurements to be collected.
+            stn_limit: the maximum amount of different stations to collect the measurements from.
+            station_ids: a list of IDs of stations to collect the measurements from.
 
         Returns:
             Error when no measurement data is available.
@@ -228,9 +225,9 @@ class Measurements:
                                                     {'time': value[1], 'type': measurements[i],
                                                      'value': value[self.measurements_pos[measurements[i]]]}, )
                                             else:
-                                                # When data for all stations is collected, return the data.
+                                                # When amount of station objects == stn_limit, return the data.
                                                 # Else continue.
-                                                if self.db.select_stations_count()[0] == len(data['station']):
+                                                if stn_limit == len(data['station']):
                                                     return data
                                         except ValueError:
                                             continue
