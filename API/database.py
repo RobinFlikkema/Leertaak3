@@ -10,9 +10,8 @@ class Database:
     """
 
     def __init__(self):
-        # TODO: production value
+        # Used to define path to 'stations.db' file.
         self.prefix = "/root/API/"
-        # self.prefix = ""
 
     def open(self):
         """ Open a connection with the database.
@@ -42,6 +41,9 @@ class Database:
         Args:
             station_id: ID of station.
 
+        Returns:
+            fetched_row: the information about the station.
+
         """
         conn, c = self.open()
 
@@ -60,14 +62,35 @@ class Database:
         Args:
             country: Name of country.
 
+        Returns:
+            fetched_rows: the information about the stations.
+
         """
         conn, c = self.open()
 
         c.execute("SELECT stn, latitude, longitude FROM stations WHERE country LIKE '%{c}%'"
                   .format(c=country))
 
-        fetched_row = c.fetchall()
+        fetched_rows = c.fetchall()
+
+        self.close(conn)
+
+        return fetched_rows
+
+    def select_stations_count(self):
+        """ Select amount of stations present in stations table.
+
+        Returns:
+            fetched_row: the amount of stations.
+
+        """
+        conn, c = self.open()
+
+        c.execute("SELECT COUNT(*) FROM stations")
+
+        fetched_row = c.fetchone()
 
         self.close(conn)
 
         return fetched_row
+

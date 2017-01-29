@@ -1,34 +1,107 @@
-from bottle import route, debug, request, error, json_dumps, run
-from API import measure_data
+from bottle import debug, request, json_dumps, run, default_app
+from API import measure_data, error
 import daemon
 import lockfile
 import signal
 import os
 
-# TODO: disable debug mode in production
 # Bottle debug mode
-debug(True)
+debug(False)
 
 
 class ApiServer:
+    """ Control API server and provide API functionality.
+
+    This class is being used to control the API server by providing functionality to start the server
+    and to provide a way to cleanly shutdown the server.
+    This class also provides functions to route request to the appropriate methods defined in other classes.
+
+    """
 
     def __init__(self):
+        """
+
+        Initialize class with Measurement object, define the Bottle app to be used, attach routes to Bottle app
+        and create HTTPError object.
+
+        """
         self.m = measure_data.Measurements()
-        self.cleanup()
+        self.app = default_app()
+        self.routes()
+        error.HTTPError()
 
     @staticmethod
     def cleanup():
+        """ Remove leftover PID file if present
+
+        When the server crashes, the PID file may not have been removed.
+        When this is the case, remove the PID file.
+
+        Raises:
+            FileNotFoundError: the PID file is not present. Pass along when this is the case.
+
+        """
         try:
             os.remove("/var/run/api_server.pid.lock")
         except FileNotFoundError:
             pass
 
-    @route('/api/station')
+    def routes(self):
+        """ Attach routes to Bottle app.
+
+        Attach the routes to be used to get measurement data to the defined Bottle app.
+
+        """
+        self.app.route('/api/station', method="GET", callback=self.station_data)
+        self.app.route('/api/country', method="GET", callback=self.country_data)
+        self.app.route('/api/stations', method="GET", callback=self.country_data)
+
+    def start(self, bottle_server='paste', host='localhost', port=8080):
+        """
+
+        Args:
+            bottle_server: the type of server to use
+            (see: https://bottlepy.org/docs/dev/deployment.html#switching-the-server-backend).
+            host: the IP-address or hostname from the interface to which the Bottle server must be attached to.
+            port: the port which the Bottle server must use.
+
+        """
+
+        # Remove a leftover PID file if present.
+        self.cleanup()
+
+        # Log errors to defined error log.
+        log = open('/var/log/api_server.log', 'a')
+
+        # Start server as a daemon (in background). Create a PID file.
+        server_daemon = daemon.DaemonContext(pidfile=lockfile.FileLock('/var/run/api_server.pid'), stderr=log)
+
+        # Cleanly shutdown server when SIGTERM signal is received.
+        server_daemon.signal_map = {
+            signal.SIGTERM: self.cleanup,
+        }
+
+        with server_daemon:
+            # Start the server.
+            run(server=bottle_server, host=host, port=port)
+
     def station_data(self):
+        """ Retrieve and return measurement data from specific station.
+
+        When the /api/station route is being called, the data from the defined station is being returned.
+
+        Returns:
+            JSON formatted error in case st_id is not defined.
+            JSON formatted measurement data in case at least st_id is defined.
+
+        """
         st_id = request.query.st_id
+        # Get time_from and time_to parameter which is used to retrieve data within a specific time period.
         time_from = 0 if request.query.time_from is "" else request.query.time_from
         time_to = 0 if request.query.time_to is "" else request.query.time_to
+        # Limit the amount of measurements returned.
         limit = 20 if request.query.limit is "" else request.query.limit
+        # Measurements to request data from.
         measurements = ['temp', 'wind', 'wind_dir']
 
         if st_id == '':
@@ -36,8 +109,18 @@ class ApiServer:
 
         return json_dumps(self.m.get_station_data(st_id, measurements, time_from, time_to, limit))
 
-    @route('/api/stations')
     def stations_data(self):
+        """ Retrieve and return measurement data from specific stations.
+
+        When the /api/stations route is being called, the data from the defined stations is being returned.
+
+        Returns:
+            JSON formatted error in case station_ids is not defined.
+            JSON formatted measurement data in case at least station_ids is defined.
+
+        """
+
+        # A list of station IDs from which measurement data has to be returned.
         station_ids = request.query.station_ids
         time_from = 0 if request.query.time_from is "" else request.query.time_from
         time_to = 0 if request.query.time_to is "" else request.query.time_to
@@ -49,8 +132,17 @@ class ApiServer:
 
         return json_dumps(self.m.get_stations_data(station_ids, measurements, time_from, time_to, limit))
 
-    @route('/api/country')
     def country_data(self):
+        """ Retrieve and return measurement data based on country name.
+
+        When the /api/country route is being called,
+        the data from stations present within the defined country is being returned.
+
+        Returns:
+            JSON formatted error in case name is not defined.
+            JSON formatted measurement data in case at least name is defined.
+
+        """
         name = request.query.name
         time_from = 0 if request.query.time_from is "" else request.query.time_from
         time_to = 0 if request.query.time_to is "" else request.query.time_to
@@ -62,20 +154,9 @@ class ApiServer:
 
         return json_dumps(self.m.get_country_data(name, measurements, time_from, time_to, limit))
 
-    @error(404)
-    def four_o_four_error(_):
-        return json_dumps({"error": {"code": "-1", "message": "Invalid method."}})
-
 
 if __name__ == '__main__':
+    # Create ApiServer object.
     server = ApiServer()
-
-    log = open('/var/log/api_server.log', 'a')
-    server_daemon = daemon.DaemonContext(pidfile=lockfile.FileLock('/var/run/api_server.pid'), stderr=log)
-
-    server_daemon.signal_map = {
-        signal.SIGTERM: server.cleanup,
-    }
-
-    with server_daemon:
-        run(server='paste', host='127.0.0.1', port=8080)
+    # Start the server.
+    server.start()
