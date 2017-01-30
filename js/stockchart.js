@@ -1,21 +1,26 @@
-$(document).ready(function () {
-    // Create the chart
-    Highcharts.stockChart('stockchartcontainer', {
+$(function () {
+
+    var stockchart = Highcharts.stockChart('stockchartcontainer', {
+
+        chart: {
+            events: {
+                load: {
+
+                }
+            }
+        },
 
         rangeSelector: {
             selected: 1
         },
 
         title: {
-            text: ""
+            text: ''
         },
 
         series: [{
-            name: 'AAPL',
-            data: 0,
-            tooltip: {
-                valueDecimals: 2
-            }
+            name: 'temp',
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
         }],
 
         credits: {

@@ -11,6 +11,10 @@ class Station {
         measurements.push(measurement);
     }
 
+    getMeasurements(){
+        return this.measurements;
+    }
+
     printDetails(){
         console.log("Printing data from station " + this.id_number);
         console.log("-----------------------------------");
