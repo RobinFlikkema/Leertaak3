@@ -45,14 +45,14 @@ class Measurement {
 
     /**
      * getCSVRowAsString
-     * This function formats the values from the values-array to a string. The values  are comma-seperated and ready to
+     * This function formats the values from the values-array to a string. The values  are comma-separated and ready to
      * be appended to a CSV
      * The Date and Time (value[1] and value[2] are converted to a UNIX Timestamp, this is because it used less
      * characters than the full date + time.
-     * FRSHTT is serpated into 6 values. Although this takes more space (because of the comma separation), this makes
+     * "FRSHTT" is separated into 6 values. Although this takes more space (because of the comma separation), this makes
      * it more readable IMO
      *
-     * @return a string which contains all values, commaseperated
+     * @return a string which contains all values, comma-separated
      */
     String getCSVRowAsString() {
         // We'll need to initialize this String, because if the parsing of the Date fails, the String isn't initialized.

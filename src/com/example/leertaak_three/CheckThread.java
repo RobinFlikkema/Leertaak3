@@ -6,14 +6,15 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Robin on 17-12-2016.
  */
-class CheckAndStoreThread implements Runnable {
-    private final CSV CSV;
-    private final BlockingQueue<Measurement> queue;
-    private final Station[] stations;
+class CheckThread implements Runnable {
+    private final BlockingQueue<Measurement> checkQueue;
+    private final BlockingQueue<Measurement> storeQueue;
+    private Station[] stations;
 
-    CheckAndStoreThread(BlockingQueue<Measurement> queue, Station[] stations) {
-        this.CSV = new CSV();
-        this.queue = queue;
+    CheckThread(BlockingQueue<Measurement> checkQueue, BlockingQueue<Measurement> storeQueue, Station[] stations) {
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+        this.checkQueue = checkQueue;
+        this.storeQueue = storeQueue;
         this.stations = stations;
     }
 
@@ -22,16 +23,14 @@ class CheckAndStoreThread implements Runnable {
         while (true) {
             ArrayList<Measurement> incomingListOfMeasurements = new ArrayList<>();
             ArrayList<Measurement> outgoingListOfMeasurements = new ArrayList<>();
-
-            if (queue.size() > 1000) {
-                queue.drainTo(incomingListOfMeasurements, 10000);
+            if (checkQueue.size() > 100) {
+                checkQueue.drainTo(incomingListOfMeasurements, 100000);
                 for (Measurement measurement : incomingListOfMeasurements) {
                     measurement = this.checkMeasurement(measurement);
                     stations[measurement.getStationNumber()].addMeasurement(measurement);
                     outgoingListOfMeasurements.add(measurement);
                 }
-                CSV.insertMeasurements(outgoingListOfMeasurements);
-
+                storeQueue.addAll(outgoingListOfMeasurements);
             } else {
                 try {
                     Thread.sleep(1000);

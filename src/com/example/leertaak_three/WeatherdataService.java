@@ -20,26 +20,34 @@ class WeatherdataService {
     private WeatherdataService(ServerSocket serverSocket)
             throws IOException {
         // This queue hold Measurements waiting to be processed (checked for missing values etc)
-        BlockingQueue<Measurement> storageQueue = new ArrayBlockingQueue<>(50000, true);
+        BlockingQueue<Measurement> checkQueue = new ArrayBlockingQueue<>(100000, true);
         // This queue hold Measurements waiting to be processed (checked for missing values etc)
-        BlockingQueue<ArrayList<String>> incomingQueue = new ArrayBlockingQueue<>(50000, true);
+        BlockingQueue<Measurement> storeQueue = new ArrayBlockingQueue<>(100000, true);
+        // This queue hold Measurements waiting to be processed (checked for missing values etc)
+        BlockingQueue<ArrayList<String>> incomingQueue = new ArrayBlockingQueue<>(100000, true);
         AtomicInteger parseCounter = new AtomicInteger(0);
 
         // This Station Array is used to hold all Stations. This is later used to calculate missing values.
         Station[] stationList = new Station[1000000];
         Arrays.fill(stationList, new Station());
-        // As the name says, this holds the ThreadPools.
-        ExecutorService[] threadPools = new ExecutorService[5];
-        ScheduledExecutorService[] threadPools2 = new ScheduledExecutorService[1];
-        threadPools[0] = Executors.newFixedThreadPool(800);              // Add Threads to Receiver threadpool
-        threadPools[2] = Executors.newFixedThreadPool(1);               // Add Threads to Inserter threadpool
-        threadPools2[0] = Executors.newScheduledThreadPool(1);               // Add Threads to Counter threadpool
-        threadPools[4] = Executors.newFixedThreadPool(75);               // Add Threads to
+        // Receiver Threads
+        ExecutorService receiverThreadPool = Executors.newCachedThreadPool();
+        // Parser Threads
+        ExecutorService parserThreadPool = Executors.newFixedThreadPool(2);
+        parserThreadPool.submit(new ParserThread(checkQueue, parseCounter, incomingQueue));
+        parserThreadPool.submit(new ParserThread(checkQueue, parseCounter, incomingQueue));
+        // Check Thread
+        ExecutorService checkerThreadPool = Executors.newFixedThreadPool(2);
+        checkerThreadPool.submit(new CheckThread(checkQueue, storeQueue, stationList));
+        // Store Thread
+        ExecutorService storeThreadPool = Executors.newFixedThreadPool(2);
+        storeThreadPool.submit(new StoreThread(storeQueue));
 
-        threadPools2[0].scheduleAtFixedRate(new QueueWatcher(storageQueue, incomingQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
-        threadPools[2].submit(new CheckAndStoreThread(storageQueue, stationList));
-        threadPools[4].submit(new ParserThread(storageQueue, parseCounter, incomingQueue));
-        threadPools[4].submit(new ParserThread(storageQueue, parseCounter, incomingQueue));
+
+        // Queue Watcher Thread
+        ScheduledExecutorService[] threadPools2 = new ScheduledExecutorService[1];
+        threadPools2[0] = Executors.newScheduledThreadPool(1);
+        threadPools2[0].scheduleAtFixedRate(new QueueWatcher(checkQueue, incomingQueue, storeQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
 
 
         // Loop to handle all incoming connections.
@@ -47,7 +55,7 @@ class WeatherdataService {
         while (true) {
             // This accepts connections and spawns a thread per connection. The thread is automatically deleted / reused when it dies.
             Socket socket = serverSocket.accept();
-            threadPools[0].submit(new ReceiverThread(socket, incomingQueue));
+            receiverThreadPool.submit(new ReceiverThread(socket, incomingQueue));
         }
     }
 

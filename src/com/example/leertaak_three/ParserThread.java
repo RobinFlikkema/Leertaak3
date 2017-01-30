@@ -28,9 +28,9 @@ class ParserThread implements Runnable {
     // TODO: Needs refactoring
     private void receiveWeatherdata() {
         try {
-            if (incomingQueue.size() > 1000) {
+            if (incomingQueue.size() > 100) {
                 ArrayList<ArrayList<String>> newList = new ArrayList<>();
-                this.incomingQueue.drainTo(newList, 1000);
+                this.incomingQueue.drainTo(newList, 10000);
 
                 for (ArrayList<String> itemTakenFromIncomingQueue : newList) {
                     // New Weatherdata

@@ -20,11 +20,16 @@ class Station {
     }
 
     double getExtrapolatedTemperature() {
-        if (measurements.size() > 1) {
-            double slope = (measurements.get(0).getTemperature() - measurements.get(measurements.size() - 1).getTemperature()) / (0 - (measurements.size() - 1));
-            return Math.round(measurements.get(measurements.size() - 1).getTemperature() + slope * 10) / 10;
-        }
-        return 0.0;
+            if (measurements.size() > 1) {
+                double totalTemperature = 0.0;
+                for (Measurement measurement : measurements){
+                    totalTemperature += measurement.getTemperature();
+                }
+                double averageTemperature = totalTemperature / measurements.size();
+                return Math.round(averageTemperature);
+            }
+            return 0.0;
+
     }
 
     double getExtrapolatedValue(int pos) {

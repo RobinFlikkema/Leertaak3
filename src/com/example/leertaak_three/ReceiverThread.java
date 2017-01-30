@@ -17,7 +17,7 @@ class ReceiverThread implements Runnable {
 
     ReceiverThread(Socket socket, BlockingQueue<ArrayList<String>> queue) {
         try {
-            this.bufferedReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream()), "UTF-8"));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream()), "UTF-8"), 256);
         } catch (IOException e) {
             e.printStackTrace();
         }
