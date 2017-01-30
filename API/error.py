@@ -1,4 +1,4 @@
-from bottle import json_dumps, error
+from bottle import json_dumps, error, response
 
 
 class HTTPError:
@@ -16,4 +16,5 @@ class HTTPError:
             JSON formatted error.
 
         """
-        return json_dumps({"error": {"code": "-1", "message": "Invalid method."}})
+        response.content_type = 'application/json'
+        return json_dumps({"error": {"code": "-1", "message": "Invalid method."}}, indent=2)

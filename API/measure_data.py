@@ -88,7 +88,10 @@ class Measurements:
                         value = line.strip().split(",")
                         # If time_to is reached, return data.
                         if int(value[1]) > time_to != 0:
-                            return data
+                            if not data['station'][0]['measurement']:
+                                return {"error": {"code": "-2", "message": "No data available."}}
+                            else:
+                                return data
                         elif int(value[1]) >= time_from:
                             # If stn in CSV matches station, continue.
                             if int(value[0]) == station:
@@ -177,7 +180,10 @@ class Measurements:
                         file_counter += 1
                         value = line.strip().split(",")
                         if int(value[1]) > time_to != 0:
-                            return data
+                            if not data['station']:
+                                return {"error": {"code": "-2", "message": "No data available."}}
+                            else:
+                                return data
                         elif int(value[1]) >= time_from:
                             if station_ids:
                                 for j in range(len(station_ids)):
@@ -298,7 +304,10 @@ class Measurements:
                         file_counter += 1
                         value = line.strip().split(",")
                         if int(value[1]) > time_to != 0:
-                            return data
+                            if not data['station']:
+                                return {"error": {"code": "-2", "message": "No data available."}}
+                            else:
+                                return data
                         elif int(value[1]) >= time_from:
                             for j in range(len(stations_data)):
                                 if int(value[0]) == stations_data[j][0]:
