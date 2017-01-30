@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * WeatherdataService
@@ -14,17 +16,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * The constructor of this class takes a ServerSocket which is used to listen to new connections.
  */
 class WeatherdataService {
-    // The port used for receiving weatherdata
+    // The port used for receiving weatherdata.
     private static final int SERVER_PORT = 7789;
 
-    private WeatherdataService(ServerSocket serverSocket)
-            throws IOException {
+    private WeatherdataService(ServerSocket serverSocket){
         // This queue hold Measurements waiting to be processed (checked for missing values etc)
         BlockingQueue<Measurement> checkQueue = new ArrayBlockingQueue<>(100000, true);
-        // This queue hold Measurements waiting to be processed (checked for missing values etc)
+        // This queue hold Measurements waiting to be stored
         BlockingQueue<Measurement> storeQueue = new ArrayBlockingQueue<>(100000, true);
-        // This queue hold Measurements waiting to be processed (checked for missing values etc)
+        // This queue hold Measurements waiting to be parsed
         BlockingQueue<ArrayList<String>> incomingQueue = new ArrayBlockingQueue<>(100000, true);
+        // This integer holds the amount of weatherdata that is parsed.
         AtomicInteger parseCounter = new AtomicInteger(0);
 
         // This Station Array is used to hold all Stations. This is later used to calculate missing values.
@@ -42,25 +44,28 @@ class WeatherdataService {
         // Store Thread
         ExecutorService storeThreadPool = Executors.newFixedThreadPool(2);
         storeThreadPool.submit(new StoreThread(storeQueue));
-
-
         // Queue Watcher Thread
-        ScheduledExecutorService[] threadPools2 = new ScheduledExecutorService[1];
-        threadPools2[0] = Executors.newScheduledThreadPool(1);
-        threadPools2[0].scheduleAtFixedRate(new QueueWatcher(checkQueue, incomingQueue, storeQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
+        ScheduledExecutorService queueWatcherPool = Executors.newScheduledThreadPool(1);
+        queueWatcherPool.scheduleAtFixedRate(new QueueWatcher(checkQueue, incomingQueue, storeQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
 
-
-        // Loop to handle all incoming connections.
-        //noinspection InfiniteLoopStatement                                     // This is just there for IntelliJ
         while (true) {
-            // This accepts connections and spawns a thread per connection. The thread is automatically deleted / reused when it dies.
-            Socket socket = serverSocket.accept();
-            receiverThreadPool.submit(new ReceiverThread(socket, incomingQueue));
+            try {
+                // This accepts connections and spawns a thread per connection.
+                Socket socket = serverSocket.accept();
+                receiverThreadPool.submit(new ReceiverThread(socket, incomingQueue));
+            } catch (IOException e) {
+                // This only happens when an I/O Error occurs while waiting for a connection.
+                e.printStackTrace();
+            }
         }
     }
 
-    public static void main(String[] args)
-            throws IOException {
-        new WeatherdataService(new ServerSocket(SERVER_PORT));
+    public static void main(String[] args){
+        try {
+            System.out.println("Bezig met starten van server op poort " + SERVER_PORT);
+            new WeatherdataService(new ServerSocket(SERVER_PORT));
+        } catch (IOException e) {
+            System.out.println("Error opening socket");
+        }
     }
 }

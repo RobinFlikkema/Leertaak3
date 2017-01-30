@@ -1,6 +1,5 @@
 package com.example.leertaak_three;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,22 +13,29 @@ import java.util.concurrent.BlockingQueue;
 class ReceiverThread implements Runnable {
     private BufferedReader bufferedReader = null;
     private final BlockingQueue<ArrayList<String>> queue;
+    private Socket socket;
 
     ReceiverThread(Socket socket, BlockingQueue<ArrayList<String>> queue) {
         try {
-            this.bufferedReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream()), "UTF-8"), 256);
+            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"), 256);
         } catch (IOException e) {
             e.printStackTrace();
         }
         this.queue = queue;
+        this.socket = socket;
     }
 
     @Override public void run() {
-        this.receiveWeatherdata();
+        try {
+            this.receiveWeatherdata();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: Needs refactoring
-    private void receiveWeatherdata() {
+    private void receiveWeatherdata()
+            throws IOException {
         try {
             ArrayList<String> incomingList = new ArrayList<>();
             int lineCounter = 0;
@@ -50,8 +56,9 @@ class ReceiverThread implements Runnable {
                     break;
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            bufferedReader.close();
+            socket.close();
         }
     }
 }
