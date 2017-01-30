@@ -76,21 +76,3 @@ class Database:
         self.close(conn)
 
         return fetched_rows
-
-    def select_stations_count(self):
-        """ Select amount of stations present in stations table.
-
-        Returns:
-            fetched_row: the amount of stations.
-
-        """
-        conn, c = self.open()
-
-        c.execute("SELECT COUNT(*) FROM stations")
-
-        fetched_row = c.fetchone()
-
-        self.close(conn)
-
-        return fetched_row
-
