@@ -107,7 +107,7 @@ class ApiServer:
         if st_id == '':
             return json_dumps({"error": {"code": "-6", "message": "Station ID missing."}})
 
-        return json_dumps(self.m.get_station_data(st_id, measurements, time_from, time_to, limit))
+        return json_dumps(self.m.get_station_data(st_id, measurements, int(time_from), int(time_to), int(limit)))
 
     def stations_data(self):
         """ Retrieve and return measurement data from specific stations.
@@ -130,7 +130,7 @@ class ApiServer:
         if station_ids == '':
             return json_dumps({"error": {"code": "-6", "message": "Station ID missing."}})
 
-        return json_dumps(self.m.get_stations_data(station_ids, measurements, time_from, time_to, limit))
+        return json_dumps(self.m.get_stations_data(station_ids, measurements, int(time_from), int(time_to), int(limit)))
 
     def country_data(self):
         """ Retrieve and return measurement data based on country name.
@@ -152,7 +152,7 @@ class ApiServer:
         if name == '':
             return json_dumps({"error": {"code": "-5", "message": "Country name missing."}})
 
-        return json_dumps(self.m.get_country_data(name, measurements, time_from, time_to, limit))
+        return json_dumps(self.m.get_country_data(name, measurements, int(time_from), int(time_to), int(limit)))
 
 
 if __name__ == '__main__':
