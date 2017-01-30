@@ -11,16 +11,15 @@ debug(False)
 
 class ApiServer:
     """ Control API server and provide API functionality.
+
     This class is being used to control the API server by providing functionality to start the server
     and to provide a way to cleanly shutdown the server.
     This class also provides functions to route request to the appropriate methods defined in other classes.
-    """
 
+    """
     def __init__(self):
-        """
-        Initialize class with Measurement object, define the Bottle app to be used, attach routes to Bottle app
-        and create HTTPError object.
-        """
+        # Initialize class with Measurement object, define the Bottle app to be used, attach routes to Bottle app
+        # and create HTTPError object.
         self.m = measure_data.Measurements()
         self.app = default_app()
         self.routes()
@@ -29,8 +28,9 @@ class ApiServer:
     @staticmethod
     def cleanup():
         """ Remove leftover PID file if present
-        When the server crashes, the PID file may not have been removed.
-        When this is the case, remove the PID file.
+
+        When the server crashes, the PID file may not have been removed. When this is the case, remove the PID file.
+
         Raises:
             FileNotFoundError: the PID file is not present. Pass along when this is the case.
         """
@@ -41,7 +41,9 @@ class ApiServer:
 
     def routes(self):
         """ Attach routes to Bottle app.
+
         Attach the routes to be used to get measurement data to the defined Bottle app.
+
         """
         self.app.route('/api/station', method="GET", callback=self.station_data)
         self.app.route('/api/country', method="GET", callback=self.country_data)
@@ -76,7 +78,9 @@ class ApiServer:
 
     def station_data(self):
         """ Retrieve and return measurement data from specific station.
+
         When the /api/station route is being called, the data from the defined station is being returned.
+
         Returns:
             JSON formatted error in case st_id is not defined.
             JSON formatted measurement data in case at least st_id is defined.
@@ -97,7 +101,9 @@ class ApiServer:
 
     def stations_data(self):
         """ Retrieve and return measurement data from specific stations.
+
         When the /api/stations route is being called, the data from the defined stations is being returned.
+
         Returns:
             JSON formatted error in case station_ids is not defined.
             JSON formatted measurement data in case at least station_ids is defined.
@@ -122,8 +128,10 @@ class ApiServer:
 
     def country_data(self):
         """ Retrieve and return measurement data based on country name.
+
         When the /api/country route is being called,
         the data from stations present within the defined country is being returned.
+
         Returns:
             JSON formatted error in case name is not defined.
             JSON formatted measurement data in case at least name is defined.

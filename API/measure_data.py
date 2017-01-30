@@ -316,6 +316,8 @@ class Measurements:
                                                 {'time': value[1], 'type': measurements[i],
                                                  'value': value[self.measurements_pos[measurements[i]]]}, )
                                         else:
+                                            # When all stations have the requested amount of measurements, return data.
+                                            # Else continue.
                                             if complete == len(data['station']):
                                                 return data
                                             complete += 1
