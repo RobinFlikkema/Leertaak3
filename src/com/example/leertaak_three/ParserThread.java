@@ -30,7 +30,7 @@ class ParserThread implements Runnable {
         try {
             if (incomingQueue.size() > 100) {
                 ArrayList<ArrayList<String>> newList = new ArrayList<>();
-                this.incomingQueue.drainTo(newList, 10000);
+                this.incomingQueue.drainTo(newList, 25000);
 
                 for (ArrayList<String> itemTakenFromIncomingQueue : newList) {
                     // New Weatherdata
@@ -71,7 +71,7 @@ class ParserThread implements Runnable {
                     }
                 }
             } else {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             }
 
         } catch (Exception | Error e) {

@@ -20,13 +20,13 @@ class StoreThread implements Runnable {
         while (true) {
             ArrayList<Measurement> incomingListOfMeasurements = new ArrayList<>();
 
-            if (storeQueue.size() > 1000) {
-                storeQueue.drainTo(incomingListOfMeasurements, 10000);
+            if (storeQueue.size() > 500) {
+                storeQueue.drainTo(incomingListOfMeasurements, 5000);
                 CSV.insertMeasurements(incomingListOfMeasurements);
 
             } else {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -12,7 +12,6 @@ class CheckThread implements Runnable {
     private Station[] stations;
 
     CheckThread(BlockingQueue<Measurement> checkQueue, BlockingQueue<Measurement> storeQueue, Station[] stations) {
-        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         this.checkQueue = checkQueue;
         this.storeQueue = storeQueue;
         this.stations = stations;
@@ -24,7 +23,7 @@ class CheckThread implements Runnable {
             ArrayList<Measurement> incomingListOfMeasurements = new ArrayList<>();
             ArrayList<Measurement> outgoingListOfMeasurements = new ArrayList<>();
             if (checkQueue.size() > 100) {
-                checkQueue.drainTo(incomingListOfMeasurements, 100000);
+                checkQueue.drainTo(incomingListOfMeasurements, 25000);
                 for (Measurement measurement : incomingListOfMeasurements) {
                     measurement = this.checkMeasurement(measurement);
                     stations[measurement.getStationNumber()].addMeasurement(measurement);
@@ -33,7 +32,7 @@ class CheckThread implements Runnable {
                 storeQueue.addAll(outgoingListOfMeasurements);
             } else {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

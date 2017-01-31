@@ -1,5 +1,6 @@
 package com.example.leertaak_three;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,7 +18,7 @@ class ReceiverThread implements Runnable {
 
     ReceiverThread(Socket socket, BlockingQueue<ArrayList<String>> queue) {
         try {
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"), 256);
+            this.bufferedReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream(), 256), "UTF-8"), 256);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,6 +42,7 @@ class ReceiverThread implements Runnable {
             int lineCounter = 0;
             while (true) {
                 String line = bufferedReader.readLine();
+
                 if (line != null) {
                     incomingList.add(line);
                     if (lineCounter > 161) {

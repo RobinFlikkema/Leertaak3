@@ -37,17 +37,15 @@ class WeatherdataService {
         // Parser Threads
         ExecutorService parserThreadPool = Executors.newFixedThreadPool(2);
         parserThreadPool.submit(new ParserThread(checkQueue, parseCounter, incomingQueue));
-        parserThreadPool.submit(new ParserThread(checkQueue, parseCounter, incomingQueue));
         // Check Thread
         ExecutorService checkerThreadPool = Executors.newFixedThreadPool(2);
         checkerThreadPool.submit(new CheckThread(checkQueue, storeQueue, stationList));
-//        checkerThreadPool.submit(new CheckThread(checkQueue, storeQueue, stationList));
         // Store Thread
         ExecutorService storeThreadPool = Executors.newFixedThreadPool(2);
         storeThreadPool.submit(new StoreThread(storeQueue));
         // Queue Watcher Thread
-        ScheduledExecutorService queueWatcherPool = Executors.newScheduledThreadPool(1);
-        queueWatcherPool.scheduleAtFixedRate(new QueueWatcher(checkQueue, incomingQueue, storeQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
+        //ScheduledExecutorService queueWatcherPool = Executors.newScheduledThreadPool(1);
+        //queueWatcherPool.scheduleAtFixedRate(new QueueWatcher(checkQueue, incomingQueue, storeQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
 
         while (true) {
             try {
