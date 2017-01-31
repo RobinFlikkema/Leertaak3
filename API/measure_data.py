@@ -1,3 +1,4 @@
+from file_read_backwards import FileReadBackwards
 from API import database
 import datetime
 
@@ -73,18 +74,11 @@ class Measurements:
         else:
             date = datetime.datetime.timestamp(datetime.datetime.now())
 
-        file_counter = 0
         while True:
             try:
-                # Go to next file if end of file is reached.
-                if file_counter == sum(1 for _ in open(self.prefix + self.to_date(date) + ".csv", 'r',
-                                                       encoding='utf-8')):
-                    date += 86400
-                    file_counter = 0
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
                     # Search CSV in reversed order to start with collecting the most recently added measurements.
                     for line in csv:
-                        file_counter += 1
                         value = line.strip().split(",")
                         # If time_to is reached, return data.
                         if int(value[1]) > time_to != 0:
@@ -110,6 +104,8 @@ class Measurements:
                         try:
                             # Test if next is present.
                             open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                            # Increase date by one day if no exception
+                            date += 86400
                         except IOError:
                             # When IOError is being raised, stop with searching.
                             break
@@ -168,16 +164,10 @@ class Measurements:
             date = datetime.datetime.timestamp(datetime.datetime.now())
 
         complete = 0
-        file_counter = 0
         while True:
             try:
-                if file_counter == sum(1 for _ in open(self.prefix + self.to_date(date) + ".csv", 'r',
-                                                       encoding='utf-8')):
-                    date += 86400
-                    file_counter = 0
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
                     for line in csv:
-                        file_counter += 1
                         value = line.strip().split(",")
                         if int(value[1]) > time_to != 0:
                             if not data['station']:
@@ -240,6 +230,7 @@ class Measurements:
                     else:
                         try:
                             open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                            date += 86400
                         except IOError:
                             break
             except IOError:
@@ -292,51 +283,46 @@ class Measurements:
             date = datetime.datetime.timestamp(datetime.datetime.now())
 
         complete = 0
-        file_counter = 0
         while True:
             try:
-                if file_counter == sum(1 for _ in open(self.prefix + self.to_date(date) + ".csv", 'r',
-                                                       encoding='utf-8')):
-                    date += 86400
-                    file_counter = 0
-                with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                    for line in csv:
-                        file_counter += 1
-                        value = line.strip().split(",")
-                        if int(value[1]) > time_to != 0:
-                            if not data['station']:
-                                return {"error": {"code": "-2", "message": "No data available."}}
-                            else:
-                                return data
-                        elif int(value[1]) >= time_from:
-                            for j in range(len(stations_data)):
-                                if int(value[0]) == stations_data[j][0]:
-                                    if int(value[0]) not in stations:
-                                        data['station'].append(
-                                            {'id': stations_data[j][0], 'longitude': '{}'.format(stations_data[j][1]),
-                                             'latitude': '{}'.format(stations_data[j][2]), 'measurement': []})
-                                        stations.append(stations_data[j][0])
-                            for i in range(len(measurements)):
-                                if measurements[i] in self.measurements_pos.keys():
-                                    try:
-                                        stn = stations.index(int(value[0]))
-                                        if not len(data['station'][stn]['measurement']) == limit * len(measurements):
-                                            data['station'][stn]['measurement'].append(
-                                                {'time': value[1], 'type': measurements[i],
-                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
-                                        else:
-                                            # When all stations have the requested amount of measurements, return data.
-                                            # Else continue.
-                                            if complete == len(data['station']):
-                                                return data
-                                            complete += 1
-                                    except ValueError:
-                                        continue
-                    else:
-                        try:
-                            open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
-                        except IOError:
-                            break
+                csv = FileReadBackwards(self.prefix + self.to_date(date) + ".csv", encoding="utf-8")
+                for line in csv:
+                    value = line.strip().split(",")
+                    if int(value[1]) > time_to != 0:
+                        if not data['station']:
+                            return {"error": {"code": "-2", "message": "No data available."}}
+                        else:
+                            return data
+                    elif int(value[1]) >= time_from:
+                        for j in range(len(stations_data)):
+                            if int(value[0]) == stations_data[j][0]:
+                                if int(value[0]) not in stations:
+                                    data['station'].append(
+                                        {'id': stations_data[j][0], 'longitude': '{}'.format(stations_data[j][1]),
+                                         'latitude': '{}'.format(stations_data[j][2]), 'measurement': []})
+                                    stations.append(stations_data[j][0])
+                        for i in range(len(measurements)):
+                            if measurements[i] in self.measurements_pos.keys():
+                                try:
+                                    stn = stations.index(int(value[0]))
+                                    if not len(data['station'][stn]['measurement']) == limit * len(measurements):
+                                        data['station'][stn]['measurement'].append(
+                                            {'time': value[1], 'type': measurements[i],
+                                             'value': value[self.measurements_pos[measurements[i]]]}, )
+                                    else:
+                                        # When all stations have the requested amount of measurements, return data.
+                                        # Else continue.
+                                        if complete == len(data['station']):
+                                            return data
+                                        complete += 1
+                                except ValueError:
+                                    continue
+                else:
+                    try:
+                        open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                        date += 86400
+                    except IOError:
+                        break
             except IOError:
                 break
 
