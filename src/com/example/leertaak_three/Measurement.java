@@ -6,15 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- *
- *
  * @author Robin
  */
 class Measurement {
     private final String[] values = new String[19];
     private int lineCounter = 0;
     private final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 
     Measurement() {
     }
@@ -108,11 +105,12 @@ class Measurement {
      *
      * @param input
      * @param position
+     *
      * @return
      */
     private String stripTags(String input, int position) {
         String output = null;
-        switch (position){
+        switch (position) {
             case 0:
             case 5:
             case 6:

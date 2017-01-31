@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 class Station {
     private final ArrayList<Measurement> measurements = new ArrayList<>();
+    private double extrapolatedTemperature;
 
     Station() {
 
@@ -19,30 +20,36 @@ class Station {
         measurements.add(measurement);
     }
 
-    double getExtrapolatedTemperature() {
-            if (measurements.size() > 1) {
-                double totalTemperature = 0.0;
-                for (Measurement measurement : measurements){
-                    totalTemperature += measurement.getTemperature();
-                }
-                double averageTemperature = totalTemperature / measurements.size();
-                return Math.round(averageTemperature);
+    private void calculateExtrapolatedTemperature() {
+        if (measurements.size() > 1) {
+            double totalTemperature = 0.0;
+            for (Measurement measurement : measurements) {
+                totalTemperature += measurement.getTemperature();
             }
-            return 0.0;
+            double averageTemperature = totalTemperature / measurements.size();
+            this.extrapolatedTemperature = Math.round(averageTemperature);
+        }
+        this.extrapolatedTemperature = 0.0;
+    }
 
+    double getExtrapolatedTemperature() {
+        return this.extrapolatedTemperature;
     }
 
     double getExtrapolatedValue(int pos) {
-        if (measurements.size() > 1) {
-            double slope = (measurements.get(0).getValueAsDouble(pos) - measurements.get(measurements.size() - 1).getValueAsDouble(pos)) / (0 - (measurements.size() - 1));
-            if (slope > 0) {
-                return Math.round(measurements.get(measurements.size() - 1).getValueAsDouble(pos) + slope * 100) / 100;
+            if (measurements.size() > 1) {
+                double total = 0.0;
+                for (Measurement measurement : measurements) {
+                    total += measurement.getValueAsDouble(pos);
+                }
+                double average = total / measurements.size();
+                return Math.round(average);
             }
-        }
         return 0.0;
     }
 
     boolean isTemperaturePlausible(double temperature) {
+        calculateExtrapolatedTemperature();
         return (getExtrapolatedTemperature() * 1.20) < temperature && temperature > (getExtrapolatedTemperature() * 0.80);
     }
 }

@@ -41,6 +41,7 @@ class WeatherdataService {
         // Check Thread
         ExecutorService checkerThreadPool = Executors.newFixedThreadPool(2);
         checkerThreadPool.submit(new CheckThread(checkQueue, storeQueue, stationList));
+//        checkerThreadPool.submit(new CheckThread(checkQueue, storeQueue, stationList));
         // Store Thread
         ExecutorService storeThreadPool = Executors.newFixedThreadPool(2);
         storeThreadPool.submit(new StoreThread(storeQueue));

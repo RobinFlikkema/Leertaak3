@@ -45,8 +45,10 @@ class CheckThread implements Runnable {
         int indexOfMissingValue = measurement.valueIsMissing();
         int stationNumber = measurement.getStationNumber();
         double temp = measurement.getTemperature();
-        if (indexOfMissingValue > 11 && 11 > indexOfMissingValue) {
-            measurement.setValue(indexOfMissingValue, String.valueOf(stations[stationNumber].getExtrapolatedValue(indexOfMissingValue)));
+
+        if ( indexOfMissingValue < 11 && indexOfMissingValue > 0) {
+            String newValue = String.valueOf(stations[stationNumber].getExtrapolatedValue(indexOfMissingValue));
+            measurement.setValue(indexOfMissingValue, newValue);
         }
         if (!stations[stationNumber].isTemperaturePlausible(temp)) {
             measurement.setValue(3, String.valueOf(stations[stationNumber].getExtrapolatedTemperature()));
