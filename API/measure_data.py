@@ -83,7 +83,7 @@ class Measurements:
                     file_counter = 0
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
                     # Search CSV in reversed order to start with collecting the most recently added measurements.
-                    for line in reversed(list(csv)):
+                    for line in csv:
                         file_counter += 1
                         value = line.strip().split(",")
                         # If time_to is reached, return data.
@@ -176,7 +176,7 @@ class Measurements:
                     date += 86400
                     file_counter = 0
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                    for line in reversed(list(csv)):
+                    for line in csv:
                         file_counter += 1
                         value = line.strip().split(",")
                         if int(value[1]) > time_to != 0:
@@ -300,7 +300,7 @@ class Measurements:
                     date += 86400
                     file_counter = 0
                 with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                    for line in reversed(list(csv)):
+                    for line in csv:
                         file_counter += 1
                         value = line.strip().split(",")
                         if int(value[1]) > time_to != 0:
