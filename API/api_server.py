@@ -48,6 +48,7 @@ class ApiServer:
         self.app.route('/api/station', method="GET", callback=self.station_data)
         self.app.route('/api/country', method="GET", callback=self.country_data)
         self.app.route('/api/stations', method="GET", callback=self.country_data)
+        self.app.route('/api/csv', method="GET", callback=self.download_csv)
 
     def start(self, bottle_server='paste', host='localhost', port=8080):
         """
@@ -156,6 +157,14 @@ class ApiServer:
         return json_dumps(self.m.get_country_data(name, measurements, int(time_from), int(time_to), int(limit)),
                           indent=2)
 
+    def download_csv(self):
+        response.content_type('text/csv')
+        response.add_header('Content-disposition', 'attachment; filename=download.csv')
+
+        limit = 20 if request.query.limit is "" else request.query.limit
+        measurements = ['temp', 'wind', 'wind_dir']
+
+        return self.m.download(country='New Zealand', measurements=measurements, limit=int(limit))
 
 if __name__ == '__main__':
     # Create ApiServer object.

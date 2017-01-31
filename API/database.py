@@ -47,7 +47,7 @@ class Database:
         """
         conn, c = self.open()
 
-        c.execute("SELECT country, latitude, longitude FROM stations WHERE stn = {s}"
+        c.execute("SELECT country, latitude, longitude, name FROM stations WHERE stn = {s}"
                   .format(s=station_id))
 
         fetched_row = c.fetchone()
@@ -68,7 +68,7 @@ class Database:
         """
         conn, c = self.open()
 
-        c.execute("SELECT stn, latitude, longitude FROM stations WHERE country LIKE '%{c}%'"
+        c.execute("SELECT stn, latitude, longitude, name FROM stations WHERE country LIKE '%{c}%'"
                   .format(c=country))
 
         fetched_rows = c.fetchall()

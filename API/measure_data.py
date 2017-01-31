@@ -66,7 +66,8 @@ class Measurements:
         # Add the information to the station JSON object.
         data = {'station': []}
         data['station'].append({'id': '{}'.format(station), 'longitude': '{}'.format(station_data[1]),
-                                'latitude': '{}'.format(station_data[2]), 'measurement': []})
+                                'latitude': '{}'.format(station_data[2]), 'name': '{}'.format(station_data[3]),
+                                'measurement': []})
 
         # If time_from is given, use the defined timestamp as a start. Otherwise use date from today.
         if time_from != 0:
@@ -183,7 +184,8 @@ class Measurements:
                                             station_data = self.db.select_station_data(value[0])
                                             data['station'].append(
                                                 {'id': value[0], 'longitude': '{}'.format(station_data[1]),
-                                                 'latitude': '{}'.format(station_data[2]), 'measurement': []})
+                                                 'latitude': '{}'.format(station_data[2]), 'name':
+                                                     '{}'.format(station_data[3]), 'measurement': []})
                                             stations.append(value[0])
                                 for i in range(len(measurements)):
                                     if measurements[i] in self.measurements_pos.keys():
@@ -209,7 +211,8 @@ class Measurements:
                                     station_data = self.db.select_station_data(value[0])
                                     data['station'].append(
                                         {'id': value[0], 'longitude': '{}'.format(station_data[1]),
-                                         'latitude': '{}'.format(station_data[2]), 'measurement': []})
+                                         'latitude': '{}'.format(station_data[2]), 'name': '{}'.format(station_data[3]),
+                                         'measurement': []})
                                     stations.append(value[0])
                                 for i in range(len(measurements)):
                                     if measurements[i] in self.measurements_pos.keys():
@@ -299,7 +302,8 @@ class Measurements:
                                 if int(value[0]) not in stations:
                                     data['station'].append(
                                         {'id': stations_data[j][0], 'longitude': '{}'.format(stations_data[j][1]),
-                                         'latitude': '{}'.format(stations_data[j][2]), 'measurement': []})
+                                         'latitude': '{}'.format(stations_data[j][2]),
+                                         'name': '{}'.format(stations_data[j][3]), 'measurement': []})
                                     stations.append(stations_data[j][0])
                         for i in range(len(measurements)):
                             if measurements[i] in self.measurements_pos.keys():
@@ -330,3 +334,6 @@ class Measurements:
             return {"error": {"code": "-2", "message": "No data available."}}
         else:
             return data
+
+    def download(self, country, measurements, limit):
+        return None
