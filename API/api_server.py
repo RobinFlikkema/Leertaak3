@@ -50,7 +50,7 @@ class ApiServer:
         """
         self.app.route('/api/station', method="GET", callback=self.station_data)
         self.app.route('/api/country', method="GET", callback=self.country_data)
-        self.app.route('/api/stations', method="GET", callback=self.country_data)
+        self.app.route('/api/stations', method="GET", callback=self.stations_data)
         self.app.route('/api/csv', method="GET", callback=self.download_csv)
 
     def start(self, bottle_server='gevent', host='localhost', port=8080):
@@ -131,11 +131,9 @@ class ApiServer:
 
         if station_ids == '' and request.query.limit == '':
             return json_dumps({"error": {"code": "-6", "message": "Station IDs missing."}}, indent=2)
-        elif request.query.limit == '':
-            return json_dumps({"error": {"code": "-7", "message": "Station limit missing."}}, indent=2)
 
         return json_dumps(self.m.get_stations_data(measurements, int(time_from), int(time_to), int(limit),
-                                                   int(stn_limit), station_ids), indent=2)
+                                                   int(stn_limit), [station_ids]), indent=2)
 
     def country_data(self):
         """ Retrieve and return measurement data based on country name.

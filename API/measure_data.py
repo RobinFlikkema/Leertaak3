@@ -93,39 +93,39 @@ class Measurements:
 
         while True:
             try:
-                with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                    # Search CSV in reversed order to start with collecting the most recently added measurements.
-                    for line in csv:
-                        value = line.strip().split(",")
-                        # If time_to is reached, return data.
-                        if int(value[1]) > time_to != 0:
-                            if not data['station'][0]['measurement']:
-                                return {"error": {"code": "-2", "message": "No data available."}}
-                            else:
-                                return data
-                        elif int(value[1]) >= time_from:
-                            # If stn in CSV matches station, continue.
-                            if int(value[0]) == station:
-                                for i in range(len(measurements)):
-                                    # If measurement in measurements_pos dictionary, add new measurement JSON object.
-                                    if measurements[i] in self.measurements_pos.keys():
-                                        # If amount of measurement values collected equals the defined limit times the
-                                        # amount of measurements to collect data from, return the data. Else continue.
-                                        if not len(data['station'][0]['measurement']) == limit * len(measurements):
-                                            data['station'][0]['measurement'].append(
-                                                {'time': value[1], 'type': measurements[i],
-                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
-                                        else:
-                                            return data
-                    else:
-                        try:
-                            # Test if next is present.
-                            open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
-                            # Increase date by one day if no exception
-                            date += 86400
-                        except IOError:
-                            # When IOError is being raised, stop with searching.
-                            break
+                # Search CSV in reversed order to start with collecting the most recently added measurements.
+                csv = FileReadBackwards(self.prefix + self.to_date(date) + ".csv", encoding="utf-8")
+                for line in csv:
+                    value = line.strip().split(",")
+                    # If time_to is reached, return data.
+                    if int(value[1]) > time_to != 0:
+                        if not data['station'][0]['measurement']:
+                            return {"error": {"code": "-2", "message": "No data available."}}
+                        else:
+                            return data
+                    elif int(value[1]) >= time_from:
+                        # If stn in CSV matches station, continue.
+                        if int(value[0]) == station:
+                            for i in range(len(measurements)):
+                                # If measurement in measurements_pos dictionary, add new measurement JSON object.
+                                if measurements[i] in self.measurements_pos.keys():
+                                    # If amount of measurement values collected equals the defined limit times the
+                                    # amount of measurements to collect data from, return the data. Else continue.
+                                    if not len(data['station'][0]['measurement']) == limit * len(measurements):
+                                        data['station'][0]['measurement'].append(
+                                            {'time': value[1], 'type': measurements[i],
+                                             'value': value[self.measurements_pos[measurements[i]]]}, )
+                                    else:
+                                        return data
+                else:
+                    try:
+                        # Test if next is present.
+                        open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                        # Increase date by one day if no exception
+                        date += 86400
+                    except IOError:
+                        # When IOError is being raised, stop with searching.
+                        break
             except IOError:
                 # When IOError is being raised, stop with searching.
                 break
@@ -191,65 +191,65 @@ class Measurements:
         complete = 0
         while True:
             try:
-                with open(self.prefix + self.to_date(date) + ".csv", 'r', encoding='utf-8') as csv:
-                    for line in csv:
-                        value = line.strip().split(",")
-                        if int(value[1]) > time_to != 0:
-                            if not data['station']:
-                                return {"error": {"code": "-2", "message": "No data available."}}
-                            else:
-                                return data
-                        elif int(value[1]) >= time_from:
-                            if station_ids:
-                                for i in range(len(measurements)):
-                                    if measurements[i] in self.measurements_pos.keys():
-                                        try:
-                                            # Check if stn from CSV is present in stations list and return the index
-                                            stn = stations.index(value[0])
-                                            if not len(data['station'][stn]['measurement']) == limit * len(
-                                                    measurements):
-                                                data['station'][stn]['measurement'].append(
-                                                    {'time': value[1], 'type': measurements[i],
-                                                     'value': value[self.measurements_pos[measurements[i]]]}, )
-                                            else:
-                                                # If all the defined stations have the amount of measurements they need
-                                                # attached to them, return the data. Else continue.
-                                                if complete == len(data['station']):
-                                                    return data
-                                                complete += 1
-                                        except ValueError:
-                                            # Continue when ValueError occurs.
-                                            continue
-                            else:
-                                if value[0] not in stations:
-                                    station_data = self.db.select_station_data(value[0])
-                                    data['station'].append(
-                                        {'id': value[0], 'longitude': '{}'.format(station_data[1]),
-                                         'latitude': '{}'.format(station_data[2]), 'name': '{}'.format(station_data[3]),
-                                         'measurement': []})
-                                    stations.append(value[0])
-                                for i in range(len(measurements)):
-                                    if measurements[i] in self.measurements_pos.keys():
-                                        try:
-                                            stn = stations.index(value[0])
-                                            if not len(data['station'][stn]['measurement']) == limit * len(
-                                                    measurements):
-                                                data['station'][stn]['measurement'].append(
-                                                    {'time': value[1], 'type': measurements[i],
-                                                     'value': value[self.measurements_pos[measurements[i]]]}, )
-                                            else:
-                                                # When amount of station objects == stn_limit, return the data.
-                                                # Else continue.
-                                                if stn_limit == len(data['station']):
-                                                    return data
-                                        except ValueError:
-                                            continue
-                    else:
-                        try:
-                            open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
-                            date += 86400
-                        except IOError:
-                            break
+                csv = FileReadBackwards(self.prefix + self.to_date(date) + ".csv", encoding="utf-8")
+                for line in csv:
+                    value = line.strip().split(",")
+                    if int(value[1]) > time_to != 0:
+                        if not data['station']:
+                            return {"error": {"code": "-2", "message": "No data available."}}
+                        else:
+                            return data
+                    elif int(value[1]) >= time_from:
+                        if station_ids:
+                            for i in range(len(measurements)):
+                                if measurements[i] in self.measurements_pos.keys():
+                                    try:
+                                        # Check if stn from CSV is present in stations list and return the index
+                                        stn = stations.index(int(value[0]))
+                                        if not len(data['station'][stn]['measurement']) == limit * len(
+                                                measurements):
+                                            data['station'][stn]['measurement'].append(
+                                                {'time': value[1], 'type': measurements[i],
+                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
+                                        else:
+                                            # If all the defined stations have the amount of measurements they need
+                                            # attached to them, return the data. Else continue.
+                                            if complete == len(data['station']):
+                                                return data
+                                            complete += 1
+                                    except ValueError:
+                                        # Continue when ValueError occurs.
+                                        continue
+                        else:
+                            if value[0] not in stations:
+                                station_data = self.db.select_station_data(value[0])
+                                data['station'].append(
+                                    {'id': value[0], 'longitude': '{}'.format(station_data[1]),
+                                     'latitude': '{}'.format(station_data[2]), 'name': '{}'.format(station_data[3]),
+                                     'measurement': []})
+                                stations.append(value[0])
+                            for i in range(len(measurements)):
+                                if measurements[i] in self.measurements_pos.keys():
+                                    try:
+                                        stn = stations.index(int(value[0]))
+                                        if not len(data['station'][stn]['measurement']) == limit * len(
+                                                measurements):
+                                            data['station'][stn]['measurement'].append(
+                                                {'time': value[1], 'type': measurements[i],
+                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
+                                        else:
+                                            # When amount of station objects == stn_limit, return the data.
+                                            # Else continue.
+                                            if stn_limit == len(data['station']):
+                                                return data
+                                    except ValueError:
+                                        continue
+                else:
+                    try:
+                        open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
+                        date += 86400
+                    except IOError:
+                        break
             except IOError:
                 break
 
@@ -401,7 +401,6 @@ class Measurements:
 
         new_line = ''
         complete = 0
-        counter = 0
         while True:
             try:
                 download_csv = open(self.csv_store + 'measurements.csv', 'a', encoding="utf-8")
