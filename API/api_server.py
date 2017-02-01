@@ -1,4 +1,6 @@
-from bottle import debug, request, json_dumps, run, default_app, response
+from gevent import monkey
+monkey.patch_all()
+from bottle import debug, request, json_dumps, run, default_app, response, static_file
 from API import measure_data, error
 import daemon
 import lockfile
@@ -24,6 +26,8 @@ class ApiServer:
         self.app = default_app()
         self.routes()
         error.HTTPError()
+        # Used to define the path to the storage location of the downloadable CSV files.
+        self.csv_store = "/root/API/csv_storage/"
 
     @staticmethod
     def cleanup():
@@ -50,7 +54,7 @@ class ApiServer:
         self.app.route('/api/stations', method="GET", callback=self.country_data)
         self.app.route('/api/csv', method="GET", callback=self.download_csv)
 
-    def start(self, bottle_server='paste', host='localhost', port=8080):
+    def start(self, bottle_server='gevent', host='localhost', port=8080):
         """
         Args:
             bottle_server: the type of server to use
@@ -63,7 +67,7 @@ class ApiServer:
         self.cleanup()
 
         # Log errors to defined error log.
-        log = open('/var/log/api_server.log', 'a')
+        log = open('/var/log/api_server.log', 'w')
 
         # Start server as a daemon (in background). Create a PID file.
         server_daemon = daemon.DaemonContext(pidfile=lockfile.FileLock('/var/run/api_server.pid'), stderr=log)
@@ -158,13 +162,27 @@ class ApiServer:
                           indent=2)
 
     def download_csv(self):
-        response.content_type('text/csv')
-        response.add_header('Content-disposition', 'attachment; filename=download.csv')
+        """ Retrieve measurement data based on country name and serve a CSV file.
+
+        When the /api/csv route is being called,
+        the data from stations present within the defined country is being inserted in a CSV file and the CSV file is
+        being returned.
+
+        Returns:
+            A JSON formatted error if no data was found.
+            A CSV file if measurement data was found.
+        """
+        response.content_type = 'application/json'
 
         limit = 20 if request.query.limit is "" else request.query.limit
         measurements = ['temp', 'wind', 'wind_dir']
 
-        return self.m.download(country='New Zealand', measurements=measurements, limit=int(limit))
+        result = self.m.download(country='New Zealand', measurements=measurements, limit=int(limit))
+
+        if result:
+            return static_file("measurements.csv", root=self.csv_store, mimetype="text/csv", download=True)
+        else:
+            return result
 
 if __name__ == '__main__':
     # Create ApiServer object.

@@ -4,7 +4,7 @@ from bottle import json_dumps, error, response
 class HTTPError:
     """ Definitions for HTTP error codes.
 
-    This class is being used to provide methods to return error messages attached to specific HTTP error codes.
+    This class is being used to provide methods to return error messages connected to specific HTTP error codes.
 
     """
 
