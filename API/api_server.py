@@ -36,6 +36,7 @@ class ApiServer:
 
         Raises:
             FileNotFoundError: the PID file is not present. Pass along when this is the case.
+
         """
         try:
             os.remove("/var/run/api_server.pid.lock")
@@ -61,6 +62,7 @@ class ApiServer:
             (see: https://bottlepy.org/docs/dev/deployment.html#switching-the-server-backend).
             host: the IP-address or hostname from the interface to which the Bottle server must be attached to.
             port: the port which the Bottle server must use.
+
         """
 
         # Remove a leftover PID file if present.
@@ -89,6 +91,7 @@ class ApiServer:
         Returns:
             JSON formatted error in case st_id is not defined.
             JSON formatted measurement data in case at least st_id is defined.
+
         """
 
         # Set the response Content-Type header to JSON format.
@@ -118,6 +121,7 @@ class ApiServer:
             JSON formatted error in case station_ids is not defined.
             JSON formatted measurement data in case at least station_ids is defined.
             JSON formatted measurement data in case at least stn_limit is defined.
+
         """
         response.content_type = 'application/json'
 
@@ -129,11 +133,19 @@ class ApiServer:
         stn_limit = 20 if request.query.limit is "" else request.query.stn_limit
         measurements = ['temp', 'wind', 'wind_dir']
 
-        if station_ids == '' and request.query.limit == '':
+        if station_ids == '' and request.query.stn_limit == '':
             return json_dumps({"error": {"code": "-6", "message": "Station IDs missing."}}, indent=2)
 
+        if station_ids != '':
+            ids = []
+            stn_split = station_ids.strip().split(",")
+            for st in stn_split:
+                ids.append(st)
+        else:
+            ids = None
+
         return json_dumps(self.m.get_stations_data(measurements, int(time_from), int(time_to), int(limit),
-                                                   int(stn_limit), [station_ids]), indent=2)
+                                                   int(stn_limit), ids), indent=2)
 
     def country_data(self):
         """ Retrieve and return measurement data based on country name.
@@ -144,6 +156,7 @@ class ApiServer:
         Returns:
             JSON formatted error in case name is not defined.
             JSON formatted measurement data in case at least name is defined.
+
         """
         response.content_type = 'application/json'
 
@@ -169,13 +182,14 @@ class ApiServer:
         Returns:
             A JSON formatted error if no data was found.
             A CSV file if measurement data was found.
+
         """
         response.content_type = 'application/json'
 
         limit = 20 if request.query.limit is "" else request.query.limit
         measurements = ['temp', 'wind', 'wind_dir']
 
-        result = self.m.download(country='New Zealand', measurements=measurements, limit=int(limit))
+        result = self.m.download('New Zealand', measurements, int(limit))
 
         if result:
             return static_file("measurements.csv", root=self.csv_store, mimetype="text/csv", download=True)

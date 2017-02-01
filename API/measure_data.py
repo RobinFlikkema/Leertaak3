@@ -105,7 +105,7 @@ class Measurements:
                             return data
                     elif int(value[1]) >= time_from:
                         # If stn in CSV matches station, continue.
-                        if int(value[0]) == station:
+                        if int(value[0]) == int(station):
                             for i in range(len(measurements)):
                                 # If measurement in measurements_pos dictionary, add new measurement JSON object.
                                 if measurements[i] in self.measurements_pos.keys():
@@ -119,7 +119,7 @@ class Measurements:
                                         return data
                 else:
                     try:
-                        # Test if next is present.
+                        # Test if next file is present.
                         open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
                         # Increase date by one day if no exception
                         date += 86400
@@ -136,7 +136,7 @@ class Measurements:
         else:
             return data
 
-    def get_stations_data(self, measurements, time_from, time_to, limit, stn_limit, station_ids=None):
+    def get_stations_data(self, measurements, time_from, time_to, limit, stn_limit, station_ids):
         """ Collect measurement data for the defined stations.
 
         Collect data for a defined stations from one or more CSV files.
@@ -205,7 +205,7 @@ class Measurements:
                                 if measurements[i] in self.measurements_pos.keys():
                                     try:
                                         # Check if stn from CSV is present in stations list and return the index
-                                        stn = stations.index(int(value[0]))
+                                        stn = stations.index(value[0])
                                         if not len(data['station'][stn]['measurement']) == limit * len(
                                                 measurements):
                                             data['station'][stn]['measurement'].append(
@@ -231,7 +231,7 @@ class Measurements:
                             for i in range(len(measurements)):
                                 if measurements[i] in self.measurements_pos.keys():
                                     try:
-                                        stn = stations.index(int(value[0]))
+                                        stn = stations.index(value[0])
                                         if not len(data['station'][stn]['measurement']) == limit * len(
                                                 measurements):
                                             data['station'][stn]['measurement'].append(
