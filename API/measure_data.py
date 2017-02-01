@@ -6,7 +6,7 @@ import datetime
 class Measurements:
     """ Search for, collect and return measurement data.
 
-    This class is being used to provide functions to search through stored CSV files and collect measurement data
+    This class provides functions to search through stored CSV files and collect measurement data
     based on parameters defined in the API calls.
 
     """
@@ -51,7 +51,7 @@ class Measurements:
     def get_station_data(self, station, measurements, time_from, time_to, limit):
         """ Collect measurement data for the defined station.
 
-        This method is being used to collect data for a defined station from one or more CSV files.
+        Collect data for a defined station from one or more CSV files.
         The method returns a JSON string containing information about the station and the measurements.
 
         Args:
@@ -139,7 +139,7 @@ class Measurements:
     def get_stations_data(self, measurements, time_from, time_to, limit, stn_limit, station_ids=None):
         """ Collect measurement data for the defined stations.
 
-        This method is being used to collect data for a defined stations from one or more CSV files.
+        Collect data for a defined stations from one or more CSV files.
         The station_ids parameter is not mandatory. When not defined, data for all stations defined in the CSV files
         is being collected.
         The method returns a JSON string containing information about the stations and the measurements.
@@ -261,8 +261,7 @@ class Measurements:
     def get_country_data(self, country, measurements, time_from, time_to, limit):
         """ Collect measurement data for the stations present in the defined country.
 
-        This method is being used to collect data for stations present in the defined country
-        from one or more CSV files.
+        Collect data for stations present in the defined country from one or more CSV files.
         The method returns a JSON string containing information about the stations and the measurements.
 
         Args:
@@ -352,8 +351,7 @@ class Measurements:
     def download(self, country, measurements, limit):
         """ Collect measurement data for the stations present in the defined country and return a CSV file.
 
-        This method is being used to collect data for stations present in the defined country
-        from one or more CSV files.
+        Collect data for stations present in the defined country from one or more CSV files.
         The method returns a CSV file containing information about the stations and the measurements.
 
         Args:

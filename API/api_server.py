@@ -14,9 +14,8 @@ debug(False)
 class ApiServer:
     """ Control API server and provide API functionality.
 
-    This class is being used to control the API server by providing functionality to start the server
-    and to provide a way to cleanly shutdown the server.
-    This class also provides functions to route request to the appropriate methods defined in other classes.
+    This class provides functions to control the API server by starting it and to provide a way to cleanly shutdown the
+    server. This class also provides functions to route request to the appropriate methods defined in other classes.
 
     """
     def __init__(self):
@@ -46,7 +45,7 @@ class ApiServer:
     def routes(self):
         """ Attach routes to Bottle app.
 
-        Attach the routes to be used to get measurement data to the defined Bottle app.
+        Attach the routes to the defined Bottle app.
 
         """
         self.app.route('/api/station', method="GET", callback=self.station_data)
@@ -55,7 +54,8 @@ class ApiServer:
         self.app.route('/api/csv', method="GET", callback=self.download_csv)
 
     def start(self, bottle_server='gevent', host='localhost', port=8080):
-        """
+        """ Start the API server.
+
         Args:
             bottle_server: the type of server to use
             (see: https://bottlepy.org/docs/dev/deployment.html#switching-the-server-backend).

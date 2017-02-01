@@ -4,8 +4,7 @@ import sqlite3
 class Database:
     """ Open and close connection with database and select station data.
 
-    This class provides functions to open and close a database connection
-    and to select station data.
+    This class provides functions to open and close a database connection and to select station data.
 
     """
 
