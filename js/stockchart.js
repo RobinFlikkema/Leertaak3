@@ -1,4 +1,4 @@
-var dummychart;
+var dummystock;
 
 function createstockchart(seriesdata) {
     var stockchart = Highcharts.stockChart('stockchartcontainer', {
@@ -36,11 +36,7 @@ function createstockchart(seriesdata) {
                                 }
                             }
                             stockchart.redraw();
-                            console.debug("updated");
-                        },
-
-                        complete: function () {
-                            bool = false;
+                            console.debug("updated stockchart");
                         }
                     });
                     setTimeout(function () {
@@ -72,7 +68,7 @@ function createstockchart(seriesdata) {
 }
 
 $(document).ready(function () {
-    createdummychart();
+    createdummychartstockchart();
     console.debug(new Date().getTime());
     $.ajax({
         url: 'https://vm.robinflikkema.nl/api/country?name=New+Zealand',
@@ -84,7 +80,7 @@ $(document).ready(function () {
         success: function (data) {
             console.debug(new Date().getTime());
             var parsed = setupparse(data);
-            destroydummychart();
+            destroydummychartstockchart();
             createstockchart(parsed);
         },
 
@@ -107,11 +103,11 @@ var setupparse = function (data) {
             for (var key in root) {
                 if (root.hasOwnProperty(key)) {
 
-                    var stations = root[key];
+                    var station = root[key];
                     var temp = []
-                    for (var key in stations['measurement']) {
-                        if (stations['measurement'].hasOwnProperty(key)) {
-                            var properties = stations['measurement'][key];
+                    for (var key in station['measurement']) {
+                        if (station['measurement'].hasOwnProperty(key)) {
+                            var properties = station['measurement'][key];
                             if (properties['type'] == 'temp') {
                                 temp.push([parseInt(properties['time']) * 1000 + 3600000, parseFloat(properties['value'])]);
                             }
@@ -126,7 +122,7 @@ var setupparse = function (data) {
                         }
                     });
 
-                    var name = stations['name'].toString();
+                    var name = station['name'].toString();
                     name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
                     temps.push({
                         name: name,
@@ -169,8 +165,8 @@ var updateparse = function (data) {
     return temp;
 }
 
-var createdummychart = function () {
-    dummychart = Highcharts.stockChart('stockchartcontainer', {
+var createdummychartstockchart = function () {
+    dummystock = Highcharts.stockChart('stockchartcontainer', {
 
         global: {
             useUTC: false,
@@ -199,9 +195,9 @@ var createdummychart = function () {
     });
 }
 
-var destroydummychart = function () {
+var destroydummychartstockchart = function () {
     try {
-        dummychart.destroy();
+        dummystock.destroy();
     } catch (e) {
     }
 }
