@@ -1,40 +1,51 @@
+var dummychart;
+
 function createstockchart(seriesdata) {
     var stockchart = Highcharts.stockChart('stockchartcontainer', {
 
-        global: {
-            useUTC: false,
-            timezoneOffset: 60
+        rangeSelector: {
+            enabled: false
+        },
+
+        tooltip: {
+            valueSuffix: ' \u00b0C'
         },
 
         chart: {
             events: {
-                load: function () {
-                    var series = this.series;
-                    setInterval(function () {
-                        $.ajax({
-                            url: 'https://vm.robinflikkema.nl/api/country?name=New+Zealand',
-                            type: 'get',
-                            dataType: 'json',
-                            withCredentials: true,
+                load: function update() {
+                    $.ajax({
+                        url: 'https://vm.robinflikkema.nl/api/country?name=New+Zealand',
+                        type: 'get',
+                        dataType: 'json',
+                        withCredentials: true,
 
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader("Authorization", "Basic YWRtaW46dGVzdDEyMw==");
-                            },
-
-                            success: function (data) {
-                                var parsed = updateparse(data);
-                                for(var i = 0; i < parsed.length; i++){
-                                    for(var j = 0; j < stockchart.series.length; j++){
-                                        if(stockchart.series[j].name == parsed[i][0]){
-                                            stockchart.series[j].addPoint([parsed[i][1], parsed[i][2]], false, true);
-                                        }
+                        success: function (data) {
+                            var parsed = updateparse(data);
+                            for (var i = 0; i < parsed.length; i++) {
+                                for (var j = 0; j < stockchart.series.length; j++) {
+                                    if (stockchart.series[j].name == parsed[i][0]) {
+                                        // console.debug(stockchart.series[j]['data'][i]);
+                                        // if (stockchart.series[j]['data'][i].y != null) {
+                                        //     if (stockchart.series[j]['data'][i].y != parsed[i][2]) {
+                                        //         console.debug("data is NOT the same");
+                                        //     }
+                                        // }
+                                        stockchart.series[j].addPoint([parsed[i][1], parsed[i][2]], false);
                                     }
                                 }
-                                stockchart.redraw();
-                                console.debug("updated");
                             }
-                        });
-                    }, 10000);
+                            stockchart.redraw();
+                            console.debug("updated");
+                        },
+
+                        complete: function () {
+                            bool = false;
+                        }
+                    });
+                    setTimeout(function () {
+                        update();
+                    }, 5000);
                 }
             }
         },
@@ -61,6 +72,7 @@ function createstockchart(seriesdata) {
 }
 
 $(document).ready(function () {
+    createdummychart();
     console.debug(new Date().getTime());
     $.ajax({
         url: 'https://vm.robinflikkema.nl/api/country?name=New+Zealand',
@@ -68,29 +80,27 @@ $(document).ready(function () {
         dataType: 'json',
         withCredentials: true,
 
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Basic YWRtaW46dGVzdDEyMw==");
-        },
 
         success: function (data) {
             console.debug(new Date().getTime());
             var parsed = setupparse(data);
+            destroydummychart();
             createstockchart(parsed);
         },
 
         complete: function (obj, message) {
-            if(message != 'success'){
+            if (message != 'success') {
                 console.debug(message);
             }
         }
-    })
+    });
 });
 
 var setupparse = function (data) {
     var temps = [];
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
-            if(key == 'error'){
+            if (key == 'error') {
                 break;
             }
             var root = data[key];
@@ -102,8 +112,8 @@ var setupparse = function (data) {
                     for (var key in stations['measurement']) {
                         if (stations['measurement'].hasOwnProperty(key)) {
                             var properties = stations['measurement'][key];
-                            if(properties['type'] == 'temp'){
-                                temp.push([parseInt(properties['time'])*1000, parseFloat(properties['value'])]);
+                            if (properties['type'] == 'temp') {
+                                temp.push([parseInt(properties['time']) * 1000 + 3600000, parseFloat(properties['value'])]);
                             }
                         }
                     }
@@ -116,8 +126,10 @@ var setupparse = function (data) {
                         }
                     });
 
+                    var name = stations['name'].toString();
+                    name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
                     temps.push({
-                        name: stations['name'].toString(),
+                        name: name,
                         data: temp
                     });
                 }
@@ -131,7 +143,7 @@ var updateparse = function (data) {
     var temp = []
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
-            if(key == 'error'){
+            if (key == 'error') {
                 break;
             }
             var root = data[key];
@@ -143,8 +155,10 @@ var updateparse = function (data) {
                     for (var key in stations['measurement']) {
                         if (stations['measurement'].hasOwnProperty(key)) {
                             var properties = stations['measurement'][key];
-                            if(properties['type'] == 'temp'){
-                                temp.push([stations['name'].toString(), parseInt(properties['time'])*1000, parseFloat(properties['value'])]);
+                            if (properties['type'] == 'temp') {
+                                var name = stations['name'].toString();
+                                name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+                                temp.push([name, parseInt(properties['time']) * 1000, parseFloat(properties['value'])]);
                             }
                         }
                     }
@@ -153,4 +167,41 @@ var updateparse = function (data) {
         }
     }
     return temp;
+}
+
+var createdummychart = function () {
+    dummychart = Highcharts.stockChart('stockchartcontainer', {
+
+        global: {
+            useUTC: false,
+            timezoneOffset: 60
+        },
+
+        lang: {
+            noData: "Loading chart data"
+        },
+
+        rangeSelector: {
+            selected: 1
+        },
+
+        legend: {
+            enabled: false,
+        },
+
+        title: {
+            text: ''
+        },
+
+        credits: {
+            enabled: false
+        }
+    });
+}
+
+var destroydummychart = function () {
+    try {
+        dummychart.destroy();
+    } catch (e) {
+    }
 }
