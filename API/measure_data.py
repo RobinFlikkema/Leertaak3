@@ -63,7 +63,7 @@ class Measurements:
         num = 112 - (0.1 * temp) + dew
         de_nom = 112 + (0.9 * temp)
 
-        return round(math.pow((num / de_nom), 8), 2) * 100
+        return "{:.1f}".format(math.pow((num / de_nom), 8) * 100)
 
     def get_station_data(self, station, measurements, time_from, time_to, limit):
         """ Collect measurement data for the defined station.

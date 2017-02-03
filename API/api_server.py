@@ -179,7 +179,7 @@ class ApiServer:
         being returned.
 
         Returns:
-            A JSON formatted error if no data was found.
+            An string containing a error message when no data was found.
             A CSV file if measurement data was found.
 
         """
@@ -193,7 +193,7 @@ class ApiServer:
         if result:
             return static_file("measurements.csv", root=self.csv_store, mimetype="text/csv", download=True)
         else:
-            return result
+            return "CSV file cannot be download based on the given parameters."
 
 if __name__ == '__main__':
     # Create ApiServer object.
