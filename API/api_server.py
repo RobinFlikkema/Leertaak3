@@ -1,5 +1,4 @@
-from gevent import monkey
-monkey.patch_all()
+from gevent import monkey ; monkey.patch_all()
 from bottle import debug, request, json_dumps, run, default_app, response, static_file
 from API import measure_data, error
 import daemon
@@ -104,7 +103,7 @@ class ApiServer:
         # Limit the amount of measurements returned.
         limit = 20 if request.query.limit is "" else request.query.limit
         # Measurements to request data from.
-        measurements = ['temp', 'wind', 'wind_dir']
+        measurements = ['temp', 'wind', 'wind_dir', 'hum']
 
         if st_id == '':
             return json_dumps({"error": {"code": "-6", "message": "Station ID missing."}}, indent=2)
@@ -131,7 +130,7 @@ class ApiServer:
         time_to = 0 if request.query.time_to is "" else request.query.time_to
         limit = 20 if request.query.limit is "" else request.query.limit
         stn_limit = 20 if request.query.limit is "" else request.query.stn_limit
-        measurements = ['temp', 'wind', 'wind_dir']
+        measurements = ['temp', 'wind', 'wind_dir', 'hum']
 
         if station_ids == '' and request.query.stn_limit == '':
             return json_dumps({"error": {"code": "-6", "message": "Station IDs missing."}}, indent=2)
@@ -164,7 +163,7 @@ class ApiServer:
         time_from = 0 if request.query.time_from is "" else request.query.time_from
         time_to = 0 if request.query.time_to is "" else request.query.time_to
         limit = 20 if request.query.limit is "" else request.query.limit
-        measurements = ['temp', 'wind', 'wind_dir']
+        measurements = ['temp', 'wind', 'wind_dir', 'hum']
 
         if name == '':
             return json_dumps({"error": {"code": "-5", "message": "Country name missing."}}, indent=2)
@@ -187,7 +186,7 @@ class ApiServer:
         response.content_type = 'application/json'
 
         limit = 20 if request.query.limit is "" else request.query.limit
-        measurements = ['temp', 'wind', 'wind_dir']
+        measurements = ['temp', 'wind', 'wind_dir', 'hum']
 
         result = self.m.download('New Zealand', measurements, int(limit))
 

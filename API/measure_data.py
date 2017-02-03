@@ -1,6 +1,7 @@
 from file_read_backwards import FileReadBackwards
 from API import database
 import datetime
+import math
 
 
 class Measurements:
@@ -15,7 +16,7 @@ class Measurements:
         # Initialize class with dictionary which contains positions for measurement in the CSV files, a database object
         # and a prefix to the path where the CSV files are stored within the system.
         self.measurements_pos = dict(temp=2, dew=3, air_station=4, air_sea=5, vis=6, wind=7, pre=8, snow_fall=9,
-                                     froze=10, rain=11, snow=12, hail=13, tun=14, tor=15, cloud=16, wind_dir=17)
+                                     cloud=10, wind_dir=11, froze=12, rain=13, snow=14, hail=15, tun=16, tor=17)
         self.db = database.Database()
         # Used to define the path to the CSV storage location.
         self.prefix = "/home/csv-storage/"
@@ -47,6 +48,22 @@ class Measurements:
 
         """
         return datetime.datetime.fromtimestamp(timestamp).strftime('%H:%M:%S')
+
+    @staticmethod
+    def calc_humidity(temp, dew):
+        """ Calculate humidity based on temperature and dew point.
+
+        Taken from http://pydoc.net/Python/weather/0.9.1/weather.units.temp and altered.
+
+        """
+
+        temp = (temp * 1.8) + 32.0
+        dew = (dew * 1.8) + 32.0
+
+        num = 112 - (0.1 * temp) + dew
+        de_nom = 112 + (0.9 * temp)
+
+        return round(math.pow((num / de_nom), 8), 2) * 100
 
     def get_station_data(self, station, measurements, time_from, time_to, limit):
         """ Collect measurement data for the defined station.
@@ -106,17 +123,22 @@ class Measurements:
                     elif int(value[1]) >= time_from:
                         # If stn in CSV matches station, continue.
                         if int(value[0]) == int(station):
-                            for i in range(len(measurements)):
-                                # If measurement in measurements_pos dictionary, add new measurement JSON object.
-                                if measurements[i] in self.measurements_pos.keys():
-                                    # If amount of measurement values collected equals the defined limit times the
-                                    # amount of measurements to collect data from, return the data. Else continue.
-                                    if not len(data['station'][0]['measurement']) == limit * len(measurements):
-                                        data['station'][0]['measurement'].append(
-                                            {'time': value[1], 'type': measurements[i],
-                                             'value': value[self.measurements_pos[measurements[i]]]}, )
-                                    else:
-                                        return data
+                            if not len(data['station'][0]['measurement']) >= limit * (len(measurements) + 1):
+                                for i in range(len(measurements)):
+                                    # If measurement in measurements_pos dictionary, add new measurement JSON object.
+                                    if measurements[i] in self.measurements_pos.keys():
+                                        # If amount of measurement values collected equals the defined limit times the
+                                        # amount of measurements to collect data from, return the data. Else continue.
+                                            data['station'][0]['measurement'].append(
+                                                {'time': value[1], 'type': measurements[i],
+                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
+                                if "hum" in measurements:
+                                    # Insert calculated humidity
+                                    data['station'][0]['measurement'].append(
+                                        {'time': value[1], 'type': "hum",
+                                         'value': self.calc_humidity(float(value[2]), float(value[3]))}, )
+                            else:
+                                return data
                 else:
                     try:
                         # Test if next file is present.
@@ -201,25 +223,29 @@ class Measurements:
                             return data
                     elif int(value[1]) >= time_from:
                         if station_ids:
-                            for i in range(len(measurements)):
-                                if measurements[i] in self.measurements_pos.keys():
-                                    try:
-                                        # Check if stn from CSV is present in stations list and return the index
-                                        stn = stations.index(value[0])
-                                        if not len(data['station'][stn]['measurement']) == limit * len(
-                                                measurements):
-                                            data['station'][stn]['measurement'].append(
-                                                {'time': value[1], 'type': measurements[i],
-                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
-                                        else:
-                                            # If all the defined stations have the amount of measurements they need
-                                            # attached to them, return the data. Else continue.
-                                            if complete == len(data['station']):
-                                                return data
-                                            complete += 1
-                                    except ValueError:
-                                        # Continue when ValueError occurs.
-                                        continue
+                            try:
+                                # Check if stn from CSV is present in stations list and return the index
+                                stn = stations.index(value[0])
+                                if not len(data['station'][stn]['measurement']) >= limit * (len(measurements) + 1):
+                                    for i in range(len(measurements)):
+                                        if measurements[i] in self.measurements_pos.keys():
+                                                data['station'][stn]['measurement'].append(
+                                                    {'time': value[1], 'type': measurements[i],
+                                                     'value': value[self.measurements_pos[measurements[i]]]}, )
+                                    if "hum" in measurements:
+                                        # Insert calculated humidity
+                                        data['station'][stn]['measurement'].append(
+                                            {'time': value[1], 'type': "hum",
+                                             'value': self.calc_humidity(float(value[2]), float(value[3]))}, )
+                                else:
+                                    # If all the defined stations have the amount of measurements they need
+                                    # attached to them, return the data. Else continue.
+                                    if complete == len(data['station']):
+                                        return data
+                                    complete += 1
+                            except ValueError:
+                                # Continue when ValueError occurs.
+                                continue
                         else:
                             if value[0] not in stations:
                                 station_data = self.db.select_station_data(value[0])
@@ -228,22 +254,27 @@ class Measurements:
                                      'latitude': '{}'.format(station_data[2]), 'name': '{}'.format(station_data[3]),
                                      'measurement': []})
                                 stations.append(value[0])
-                            for i in range(len(measurements)):
-                                if measurements[i] in self.measurements_pos.keys():
-                                    try:
-                                        stn = stations.index(value[0])
-                                        if not len(data['station'][stn]['measurement']) == limit * len(
-                                                measurements):
-                                            data['station'][stn]['measurement'].append(
-                                                {'time': value[1], 'type': measurements[i],
-                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
-                                        else:
-                                            # When amount of station objects == stn_limit, return the data.
-                                            # Else continue.
-                                            if stn_limit == len(data['station']):
-                                                return data
-                                    except ValueError:
-                                        continue
+                                try:
+                                    # Check if stn from CSV is present in stations list and return the index
+                                    stn = stations.index(value[0])
+                                    if not len(data['station'][stn]['measurement']) == limit * (len(measurements) + 1):
+                                        for i in range(len(measurements)):
+                                            if measurements[i] in self.measurements_pos.keys():
+                                                data['station'][stn]['measurement'].append(
+                                                    {'time': value[1], 'type': measurements[i],
+                                                     'value': value[self.measurements_pos[measurements[i]]]}, )
+                                        if "hum" in measurements:
+                                            # Insert calculated humidity
+                                            data['station'][0]['measurement'].append(
+                                                {'time': value[1], 'type': "hum",
+                                                 'value': self.calc_humidity(float(value[2]), float(value[3]))}, )
+                                    else:
+                                        # When amount of station objects == stn_limit, return the data.
+                                        # Else continue.
+                                        if stn_limit == len(data['station']):
+                                            return data
+                                except ValueError:
+                                    continue
                 else:
                     try:
                         open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
@@ -318,22 +349,29 @@ class Measurements:
                         else:
                             return data
                     elif int(value[1]) >= time_from:
-                        for i in range(len(measurements)):
-                            if measurements[i] in self.measurements_pos.keys():
-                                try:
-                                    stn = stations.index(int(value[0]))
-                                    if not len(data['station'][stn]['measurement']) == limit * len(measurements):
+                        try:
+                            # Check if stn from CSV is present in stations list and return the index
+                            stn = stations.index(int(value[0]))
+                            if not len(data['station'][stn]['measurement']) == limit * (len(measurements) + 1):
+                                for i in range(len(measurements)):
+                                    if measurements[i] in self.measurements_pos.keys():
                                         data['station'][stn]['measurement'].append(
                                             {'time': value[1], 'type': measurements[i],
                                              'value': value[self.measurements_pos[measurements[i]]]}, )
-                                    else:
-                                        # When all stations have the requested amount of measurements, return data.
-                                        # Else continue.
-                                        if complete == len(data['station']):
-                                            return data
-                                        complete += 1
-                                except ValueError:
-                                    continue
+                                if "hum" in measurements:
+                                    # Insert calculated humidity
+                                    data['station'][stn]['measurement'].append(
+                                        {'time': value[1], 'type': "hum",
+                                         'value': self.calc_humidity(float(value[2]), float(value[3]))}, )
+                            else:
+                                # If all the defined stations have the amount of measurements they need
+                                # attached to them, return the data. Else continue.
+                                if complete == len(data['station']):
+                                    return data
+                                complete += 1
+                        except ValueError:
+                            # Continue when ValueError occurs.
+                            continue
                 else:
                     try:
                         open(self.prefix + self.to_date(date + 86400) + ".csv", 'r', encoding='utf-8')
@@ -379,7 +417,7 @@ class Measurements:
                                  air_sea="Air pressure sea level (mBAR)", vis="Visibility (km)",
                                  wind="Wind speed (km/h)", pre="Precipitation (cm)", snow_fall="Snow fall (cm)",
                                  froze="Frozen", rain="Rain", snow="Snow", hail="Hail", tun="Thunder", tor="Tornado",
-                                 cloud="Cloudiness (%)", wind_dir="Wind direction (°)")
+                                 cloud="Cloudiness (%)", wind_dir="Wind direction (°)", hum="Humidity (%)")
 
         stations = {}
 
@@ -412,26 +450,30 @@ class Measurements:
                         station_data = self.db.select_station_data(value[0])
                         new_line += '"' + station_data[3] + '",' + '"' + self.to_date(int(value[1])) + '",' + \
                                     self.to_time(int(value[1])) + '",'
-                        for i in range(len(measurements)):
-                            if measurements[i] in self.measurements_pos.keys():
-                                if not stations[int(value[0])] == limit * len(measurements):
-                                    if self.measurements_pos[measurements[i]] in range(10, 15):
-                                        if value[self.measurements_pos[measurements[i]]] == 1:
-                                            measurement_value = "yes"
+                        if not stations[int(value[0])] >= limit * (len(measurements) + 1):
+                            for i in range(len(measurements)):
+                                if measurements[i] in self.measurements_pos.keys():
+                                        if self.measurements_pos[measurements[i]] in range(12, 17):
+                                            if int(value[self.measurements_pos[measurements[i]]]) == 1:
+                                                measurement_value = "yes"
+                                            else:
+                                                measurement_value = "no"
                                         else:
-                                            measurement_value = "no"
-                                    else:
-                                        measurement_value = value[self.measurements_pos[measurements[i]]]
-                                    # Insert a new measurement.
-                                    if i == len(measurements) - 1:
-                                        new_line += '"' + measurement_value + '"'
-                                    else:
-                                        new_line += '"' + measurement_value + '",'
-                                    stations[int(value[0])] += 1
-                                else:
-                                    if complete == len(stations):
-                                        return True
-                                    complete += 1
+                                            measurement_value = value[self.measurements_pos[measurements[i]]]
+                                        # Insert new measurement.
+                                        if i == len(measurements) and "hum" not in measurements:
+                                            new_line += '"' + measurement_value + '"'
+                                        else:
+                                            new_line += '"' + measurement_value + '",'
+                                        stations[int(value[0])] += 1
+                            if "hum" in measurements:
+                                # Insert new measurement.
+                                new_line += '"' + str(self.calc_humidity(float(value[2]), float(value[3]))) + '"'
+                                stations[int(value[0])] += 1
+                        else:
+                            if complete == len(stations):
+                                return True
+                            complete += 1
                         # Write line to CSV file.
                         download_csv.write("\n" + new_line)
                         new_line = ''
