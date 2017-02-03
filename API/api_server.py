@@ -1,4 +1,4 @@
-from gevent import monkey ; monkey.patch_all()
+from gevent import monkey; monkey.patch_all()
 from bottle import debug, request, json_dumps, run, default_app, response, static_file
 from API import measure_data, error
 import daemon

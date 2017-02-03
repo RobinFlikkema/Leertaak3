@@ -98,8 +98,8 @@ class Measurements:
 
         # Add the information to the station JSON object.
         data = {'station': []}
-        data['station'].append({'id': '{}'.format(station), 'longitude': '{}'.format(station_data[1]),
-                                'latitude': '{}'.format(station_data[2]), 'name': '{}'.format(station_data[3]),
+        data['station'].append({'id': str(station), 'longitude': str(station_data[1]),
+                                'latitude': str(station_data[2]), 'name': str(station_data[3]),
                                 'measurement': []})
 
         # If time_from is given, use the defined timestamp as a start. Otherwise use date from today.
@@ -200,9 +200,9 @@ class Measurements:
                 # Append new station object if not present in stations list.
                 station_data = self.db.select_station_data(station_ids[i])
                 data['station'].append(
-                    {'id': station_ids[i], 'longitude': '{}'.format(station_data[1]),
-                     'latitude': '{}'.format(station_data[2]), 'name':
-                         '{}'.format(station_data[3]), 'measurement': []})
+                    {'id': station_ids[i], 'longitude': str(station_data[1]),
+                     'latitude': str(station_data[2]), 'name':
+                         str(station_data[3]), 'measurement': []})
                 stations.append(station_ids[i])
 
         if time_from != 0:
@@ -250,8 +250,8 @@ class Measurements:
                             if value[0] not in stations:
                                 station_data = self.db.select_station_data(value[0])
                                 data['station'].append(
-                                    {'id': value[0], 'longitude': '{}'.format(station_data[1]),
-                                     'latitude': '{}'.format(station_data[2]), 'name': '{}'.format(station_data[3]),
+                                    {'id': value[0], 'longitude': str(station_data[1]),
+                                     'latitude': str(station_data[2]), 'name': str(station_data[3]),
                                      'measurement': []})
                                 stations.append(value[0])
                                 try:
@@ -327,9 +327,9 @@ class Measurements:
         for i in range(len(stations_data)):
             if int(stations_data[i][0]) not in stations:
                 data['station'].append(
-                    {'id': stations_data[i][0], 'longitude': '{}'.format(stations_data[i][1]),
-                     'latitude': '{}'.format(stations_data[i][2]),
-                     'name': '{}'.format(stations_data[i][3]), 'measurement': []})
+                    {'id': stations_data[i][0], 'longitude': str(stations_data[i][1]),
+                     'latitude': str(stations_data[i][2]),
+                     'name': str(stations_data[i][3]), 'measurement': []})
                 stations.append(stations_data[i][0])
 
         if time_from != 0:
@@ -409,7 +409,7 @@ class Measurements:
         stations_data = self.db.select_country_data(country)
 
         if not stations_data:
-            return {"error": {"code": "-4", "message": "Invalid country."}}
+            return False
 
         # A dictionary containing the names of the different measurements.
         measurements_name = dict(temp="Temperature (°C)", dew="Dew point (°C)",
@@ -489,6 +489,6 @@ class Measurements:
         download_csv.close()
 
         if not stations:
-            return {"error": {"code": "-2", "message": "No data available."}}
+            return False
         else:
             return True
