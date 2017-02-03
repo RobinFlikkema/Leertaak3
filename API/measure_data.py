@@ -412,12 +412,12 @@ class Measurements:
             return False
 
         # A dictionary containing the names of the different measurements.
-        measurements_name = dict(temp="Temperature (°C)", dew="Dew point (°C)",
+        measurements_name = dict(temp="Temperature (degrees C)", dew="Dew point (degrees C)",
                                  air_station="Air pressure station level (mBAR)",
                                  air_sea="Air pressure sea level (mBAR)", vis="Visibility (km)",
                                  wind="Wind speed (km/h)", pre="Precipitation (cm)", snow_fall="Snow fall (cm)",
                                  froze="Frozen", rain="Rain", snow="Snow", hail="Hail", tun="Thunder", tor="Tornado",
-                                 cloud="Cloudiness (%)", wind_dir="Wind direction (°)", hum="Humidity (%)")
+                                 cloud="Cloudiness (%)", wind_dir="Wind direction (degrees)", hum="Humidity (%)")
 
         stations = {}
 
