@@ -44,7 +44,7 @@ class Measurements:
             timestamp: the UNIX timestamp to be converted.
 
         Returns:
-            The UNIX timestamp converted to a time (format: )
+            The UNIX timestamp converted to a time (format: HH:MM:SS)
 
         """
         return datetime.datetime.fromtimestamp(timestamp).strftime('%H:%M:%S')
