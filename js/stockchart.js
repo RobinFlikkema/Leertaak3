@@ -8,6 +8,7 @@ function createstockchart(seriesdata) {
         },
 
         tooltip: {
+            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}</b><br/>',
             valueSuffix: ' \u00b0C'
         },
 
@@ -41,7 +42,7 @@ function createstockchart(seriesdata) {
                     });
                     setTimeout(function () {
                         update();
-                    }, 5000);
+                    }, 10000);
                 }
             }
         },

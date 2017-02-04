@@ -36,30 +36,23 @@ $(document).ready(function () {
                     }
                 }
                 var sorted = [];
-                while (highestspeeds.length > 0) {
-                    var values = highestspeeds.map(function (arr) {
-                        return arr[1];
-                    });
-                    var max = Math.max.apply(null, values);
-                    for (i = 0; i < highestspeeds.length; i++) {
-                        if (max = highestspeeds[i][1]) {
 
-                            if (!isFinite(highestspeeds[i][1])) {
-                                highestspeeds.splice(i, 1)[0];
-                                continue;
-                            }
-                            highestspeeds[i][1] += " km/h";
-                            sorted.push(highestspeeds.splice(i, 1)[0]);
-                        }
+                var values = highestspeeds.map(function (arr) {
+                    if (isFinite(arr[1])) {
+                        return arr[1];
+                    } else {
+                        return 0;
                     }
-                }
+                });
+                var max = Math.max(values);
                 createtable(sorted);
             }
         });
         setTimeout(function () {
             update();
-        }, 5000);
+        }, 15000);
     }
+
     update();
 });
 
@@ -68,7 +61,9 @@ var createtable = function (tableData) {
     try {
         var previoustable = document.getElementById('currenttable');
         previoustable.parentNode.removeChild(previoustable);
-    } catch (e) {}
+    } catch (e) {
+    }
+
     var tablepanel = document.getElementById("tablecontainer");
     var table = document.createElement('table');
     table.id = "currenttable"
@@ -83,9 +78,9 @@ var createtable = function (tableData) {
     windspeed.innerHTML = "<b>Windspeed</b>";
 
     var count = 0;
-    tableData.forEach(function(rowData) {
+    tableData.forEach(function (rowData) {
         count++;
-        if(count <= 5) {
+        if (count <= 5) {
             var row = document.createElement('tr');
             rowData.forEach(function (cellData) {
                 var cell = document.createElement('td');

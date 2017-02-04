@@ -1,6 +1,7 @@
 var oceanic_stations = [914900, 931190, 932910, 933080, 934170, 934340, 934360, 935160, 935450, 936140, 938060, 938440, 938960, 939440, 939860, 939970];
 var currentrose;
 var previousdata = [];
+var selected;
 
 function createchart(seriedata) {
     var categories = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
@@ -14,15 +15,22 @@ function createchart(seriedata) {
             polar: true,
             type: 'line'
         },
+
+        tooltip: {
+            headerFormat: '<span style="color:{point.color}">\u25CF</span>  <b>{series.name}</b><br/>',
+            pointFormat: '<b>direction:</b> {point.x:.2f}\u00b0<br/><b>speed:</b> {point.y:.2f} km/h'
+        },
+
         title: {
-            text: 'Wind Rose'
+            text: ''
         },
         pane: {
-            size: '85%'
+            // size: '85%'
         },
         legend: {
-            enabled: false,
-            layout: 'horizontal'
+            enabled: true,
+            align: 'right',
+            layout: 'vertical'
         },
         xAxis: {
             min: 0,
@@ -41,23 +49,14 @@ function createchart(seriedata) {
             endOnTick: false,
             showLastLabel: true,
             title: {
-                text: 'Frequency (%)'
+                text: 'Wind speed'
             },
             labels: {
                 formatter: function () {
-                    return this.value + '%';
+                    return this.value;
                 }
             },
             reversedStacks: false
-        },
-
-        plotOptions: {
-            series: {
-                stacking: 'normal',
-                shadow: false,
-                groupPadding: 0,
-                pointPlacement: 'on'
-            }
         },
 
         credits: {
@@ -87,36 +86,39 @@ $(function () {
                                 if (root.hasOwnProperty(key)) {
                                     var station = root[key];
                                     if (oceanic_stations.indexOf(parseInt(station['id'])) != -1) {
-                                        var totalwind = [];
-                                        var totaldir = [];
+                                        var totalwind = 0;
+                                        var countwind = 0;
+                                        var totaldir = 0;
+                                        var countdir = 0;
                                         for (var key in station['measurement']) {
                                             var measurement = station['measurement'][key];
                                             if (measurement['type'] == 'wind') {
-                                                totalwind.push(parseFloat(measurement['value']));
+                                                totalwind += parseInt(measurement['value']);
+                                                countwind++;
                                             }
                                             if (measurement['type'] == 'wind_dir') {
-                                                totaldir.push(parseFloat(measurement['value']));
+                                                totaldir += parseFloat(measurement['value']);
+                                                countdir++;
                                             }
-                                        }
-                                        var datafield = [];
-
-                                        for (i = 0; i < totaldir.length; i++) {
-                                            datafield.push([totaldir[i], totalwind[i]]);
                                         }
                                     }
 
-                                    previousdata = datafield;
-                                    var name = station['name'].toString();
-                                    name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-                                    winddata.push({
-                                        name: name,
-                                        data: datafield
-                                    });
+                                    var avgdir = totaldir / countdir;
+                                    var avgwind = Math.round((totalwind / countwind) * 100) / 100;
+
+                                    if (Math.round(avgwind) != 0) {
+                                        var name = station['name'].toString();
+                                        name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+                                        winddata.push({
+                                            name: name,
+                                            data: [[0, 0], [avgdir, avgwind]],
+                                            animation: false
+                                        });
+                                    }
                                 }
                             }
                         }
                     }
-                    console.debug("data isn't equal");
                     destroydummywindrose();
                     createchart(winddata);
                 }
@@ -124,7 +126,7 @@ $(function () {
         );
         setTimeout(function () {
             update();
-        }, 5000);
+        }, 60000);
     }
 
     update();
@@ -140,6 +142,12 @@ var createdummywindrose = function () {
 
         lang: {
             noData: 'Loading chart data'
+        },
+
+        plotOptions: {
+            series: {
+                animation: false
+            }
         },
 
         title: {
