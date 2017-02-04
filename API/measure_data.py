@@ -2,6 +2,7 @@ from file_read_backwards import FileReadBackwards
 from API import database
 import datetime
 import math
+import time
 
 
 class Measurements:
@@ -124,14 +125,12 @@ class Measurements:
                         # If stn in CSV matches station, continue.
                         if int(value[0]) == int(station):
                             if not len(data['station'][0]['measurement']) >= limit * (len(measurements) + 1):
-                                for i in range(len(measurements)):
-                                    # If measurement in measurements_pos dictionary, add new measurement JSON object.
-                                    if measurements[i] in self.measurements_pos.keys():
-                                        # If amount of measurement values collected equals the defined limit times the
-                                        # amount of measurements to collect data from, return the data. Else continue.
-                                            data['station'][0]['measurement'].append(
-                                                {'time': value[1], 'type': measurements[i],
-                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
+                                for i in range(len(measurements) - 1):
+                                    # If amount of measurement values collected equals the defined limit times the
+                                    # amount of measurements to collect data from, return the data. Else continue.
+                                    data['station'][0]['measurement'].append(
+                                        {'time': value[1], 'type': measurements[i],
+                                         'value': value[self.measurements_pos[measurements[i]]]}, )
                                 if "hum" in measurements:
                                     # Insert calculated humidity
                                     data['station'][0]['measurement'].append(
@@ -227,11 +226,10 @@ class Measurements:
                                 # Check if stn from CSV is present in stations list and return the index
                                 stn = stations.index(value[0])
                                 if not len(data['station'][stn]['measurement']) >= limit * (len(measurements) + 1):
-                                    for i in range(len(measurements)):
-                                        if measurements[i] in self.measurements_pos.keys():
-                                                data['station'][stn]['measurement'].append(
-                                                    {'time': value[1], 'type': measurements[i],
-                                                     'value': value[self.measurements_pos[measurements[i]]]}, )
+                                    for i in range(len(measurements) - 1):
+                                        data['station'][stn]['measurement'].append(
+                                            {'time': value[1], 'type': measurements[i],
+                                             'value': value[self.measurements_pos[measurements[i]]]}, )
                                     if "hum" in measurements:
                                         # Insert calculated humidity
                                         data['station'][stn]['measurement'].append(
@@ -258,11 +256,10 @@ class Measurements:
                                     # Check if stn from CSV is present in stations list and return the index
                                     stn = stations.index(value[0])
                                     if not len(data['station'][stn]['measurement']) == limit * (len(measurements) + 1):
-                                        for i in range(len(measurements)):
-                                            if measurements[i] in self.measurements_pos.keys():
-                                                data['station'][stn]['measurement'].append(
-                                                    {'time': value[1], 'type': measurements[i],
-                                                     'value': value[self.measurements_pos[measurements[i]]]}, )
+                                        for i in range(len(measurements) - 1):
+                                            data['station'][stn]['measurement'].append(
+                                                {'time': value[1], 'type': measurements[i],
+                                                 'value': value[self.measurements_pos[measurements[i]]]}, )
                                         if "hum" in measurements:
                                             # Insert calculated humidity
                                             data['station'][0]['measurement'].append(
@@ -353,11 +350,10 @@ class Measurements:
                             # Check if stn from CSV is present in stations list and return the index
                             stn = stations.index(int(value[0]))
                             if not len(data['station'][stn]['measurement']) == limit * (len(measurements) + 1):
-                                for i in range(len(measurements)):
-                                    if measurements[i] in self.measurements_pos.keys():
-                                        data['station'][stn]['measurement'].append(
-                                            {'time': value[1], 'type': measurements[i],
-                                             'value': value[self.measurements_pos[measurements[i]]]}, )
+                                for i in range(len(measurements) - 1):
+                                    data['station'][stn]['measurement'].append(
+                                        {'time': value[1], 'type': measurements[i],
+                                         'value': value[self.measurements_pos[measurements[i]]]}, )
                                 if "hum" in measurements:
                                     # Insert calculated humidity
                                     data['station'][stn]['measurement'].append(
@@ -451,21 +447,20 @@ class Measurements:
                         new_line += '"' + station_data[3] + '",' + '"' + self.to_date(int(value[1])) + '",' + \
                                     self.to_time(int(value[1])) + '",'
                         if not stations[int(value[0])] >= limit * (len(measurements) + 1):
-                            for i in range(len(measurements)):
-                                if measurements[i] in self.measurements_pos.keys():
-                                        if self.measurements_pos[measurements[i]] in range(12, 17):
-                                            if int(value[self.measurements_pos[measurements[i]]]) == 1:
-                                                measurement_value = "yes"
-                                            else:
-                                                measurement_value = "no"
-                                        else:
-                                            measurement_value = value[self.measurements_pos[measurements[i]]]
-                                        # Insert new measurement.
-                                        if i == len(measurements) and "hum" not in measurements:
-                                            new_line += '"' + measurement_value + '"'
-                                        else:
-                                            new_line += '"' + measurement_value + '",'
-                                        stations[int(value[0])] += 1
+                            for i in range(len(measurements) - 1):
+                                if self.measurements_pos[measurements[i]] in range(12, 17):
+                                    if int(value[self.measurements_pos[measurements[i]]]) == 1:
+                                        measurement_value = "yes"
+                                    else:
+                                        measurement_value = "no"
+                                else:
+                                    measurement_value = value[self.measurements_pos[measurements[i]]]
+                                # Insert new measurement.
+                                if i == len(measurements) and "hum" not in measurements:
+                                    new_line += '"' + measurement_value + '"'
+                                else:
+                                    new_line += '"' + measurement_value + '",'
+                                stations[int(value[0])] += 1
                             if "hum" in measurements:
                                 # Insert new measurement.
                                 new_line += '"' + str(self.calc_humidity(float(value[2]), float(value[3]))) + '"'
