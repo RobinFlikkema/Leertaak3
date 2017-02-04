@@ -2,7 +2,6 @@ from file_read_backwards import FileReadBackwards
 from API import database
 import datetime
 import math
-import time
 
 
 class Measurements:
