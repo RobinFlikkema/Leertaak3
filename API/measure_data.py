@@ -108,6 +108,8 @@ class Measurements:
         else:
             date = datetime.datetime.timestamp(datetime.datetime.now())
 
+        m_limit = limit * (len(measurements) + 1)
+
         while True:
             try:
                 # Search CSV in reversed order to start with collecting the most recently added measurements.
@@ -123,7 +125,7 @@ class Measurements:
                     elif int(value[1]) >= time_from:
                         # If stn in CSV matches station, continue.
                         if int(value[0]) == int(station):
-                            if not len(data['station'][0]['measurement']) >= limit * (len(measurements) + 1):
+                            if not len(data['station'][0]['measurement']) >= m_limit:
                                 for i in range(len(measurements) - 1):
                                     # If amount of measurement values collected equals the defined limit times the
                                     # amount of measurements to collect data from, return the data. Else continue.
@@ -208,6 +210,8 @@ class Measurements:
         else:
             date = datetime.datetime.timestamp(datetime.datetime.now())
 
+        m_limit = limit * (len(measurements) + 1)
+
         complete = 0
         while True:
             try:
@@ -224,7 +228,7 @@ class Measurements:
                             try:
                                 # Check if stn from CSV is present in stations list and return the index
                                 stn = stations.index(value[0])
-                                if not len(data['station'][stn]['measurement']) >= limit * (len(measurements) + 1):
+                                if not len(data['station'][stn]['measurement']) >= m_limit:
                                     for i in range(len(measurements) - 1):
                                         data['station'][stn]['measurement'].append(
                                             {'time': value[1], 'type': measurements[i],
@@ -254,7 +258,7 @@ class Measurements:
                                 try:
                                     # Check if stn from CSV is present in stations list and return the index
                                     stn = stations.index(value[0])
-                                    if not len(data['station'][stn]['measurement']) == limit * (len(measurements) + 1):
+                                    if not len(data['station'][stn]['measurement']) == m_limit:
                                         for i in range(len(measurements) - 1):
                                             data['station'][stn]['measurement'].append(
                                                 {'time': value[1], 'type': measurements[i],
@@ -333,6 +337,8 @@ class Measurements:
         else:
             date = datetime.datetime.timestamp(datetime.datetime.now())
 
+        m_limit = limit * (len(measurements) + 1)
+
         complete = 0
         while True:
             try:
@@ -348,7 +354,7 @@ class Measurements:
                         try:
                             # Check if stn from CSV is present in stations list and return the index
                             stn = stations.index(int(value[0]))
-                            if not len(data['station'][stn]['measurement']) == limit * (len(measurements) + 1):
+                            if not len(data['station'][stn]['measurement']) == m_limit:
                                 for i in range(len(measurements) - 1):
                                     data['station'][stn]['measurement'].append(
                                         {'time': value[1], 'type': measurements[i],
@@ -432,6 +438,8 @@ class Measurements:
 
         download_csv.write('"Station name",' + '"Date",' + '"Time",' + csv_head)
 
+        m_limit = limit * (len(measurements) + 1)
+
         new_line = ''
         complete = 0
         while True:
@@ -445,7 +453,7 @@ class Measurements:
                         station_data = self.db.select_station_data(value[0])
                         new_line += '"' + station_data[3] + '",' + '"' + self.to_date(int(value[1])) + '",' + \
                                     self.to_time(int(value[1])) + '",'
-                        if not stations[int(value[0])] >= limit * (len(measurements) + 1):
+                        if not stations[int(value[0])] >= m_limit:
                             for i in range(len(measurements) - 1):
                                 if self.measurements_pos[measurements[i]] in range(12, 17):
                                     if int(value[self.measurements_pos[measurements[i]]]) == 1:
