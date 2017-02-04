@@ -31,7 +31,8 @@
 <body style="background-color: #9acfea">
 <div class="jumbotron text-center" style="background-color: #00247d">
     <h1 style="display: inline">
-        <span class="title-text">New Zealand energy corp</span>
+        <span class="title-text">New Zealand Energy Corp</span>
+        <div style="width: 100%; border: 2px solid red; position: relative; top: 5px"></div>
     </h1>
 </div>
 <div class="container-fluid">
@@ -40,7 +41,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading text-center">Temperatures</div>
                 <div class="panel-body">
-                    <div id="stockchartcontainer"></div>
+                    <div id="tempstockchartcontainer"></div>
                 </div>
             </div>
         </div>
@@ -49,6 +50,16 @@
                 <div class="panel-heading text-center">Wind direction</div>
                 <div class="panel-body">
                     <div id="windrosecontainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">Humidity</div>
+                <div class="panel-body">
+                    <div id="humidstockchartcontainer"></div>
                 </div>
             </div>
         </div>
@@ -67,7 +78,8 @@
                 <div class="panel-heading text-center">Download data</div>
                 <div class="panel-body">
                     <div class="text-center">
-                        <a href="https://vm.robinflikkema.nl/api/csv" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Download CSV</a>
+                        <a href="https://vm.robinflikkema.nl/api/csv" class="btn btn-default btn-lg"><span
+                                class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Download CSV</a>
                     </div>
                 </div>
             </div>
@@ -79,11 +91,13 @@
                     <form method="post" action="change_credentials.php">
                         <div class="form-group">
                             <label for="AUTH_USER">Current Password</label>
-                            <input class="form-control" name="AUTH_USER" id="AUTH_USER" type="password" required minlength="5" placeholder="Current Password"/>
+                            <input class="form-control" name="AUTH_USER" id="AUTH_USER" type="password" required
+                                   minlength="5" placeholder="Current Password"/>
                         </div>
                         <div class="form-group">
                             <label for="NEW_AUTH_PW">New Password</label>
-                            <input class="form-control" name="NEW_AUTH_PW" id="NEW_AUTH_PW" type="password" required minlength="5" placeholder="New Password"/>
+                            <input class="form-control" name="NEW_AUTH_PW" id="NEW_AUTH_PW" type="password" required
+                                   minlength="5" placeholder="New Password"/>
                         </div>
                         <button class="btn btn-default" type="submit" name="submit">Change</button>
                     </form>
@@ -92,13 +106,23 @@
         </div>
     </div>
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="js/highcharts-custom.js"></script>
 <script src="js/moment.js"></script>
-<script src="js/stockchart.js"></script>
+<script src="js/tempstockchart.js"></script>
+<script src="js/humidstockchart.js"></script>
 <script src="js/table.js"></script>
 <script src="js/WindRose.js"></script>
+
+<script>
+    Highcharts.setOptions({
+        rangeSelector: {
+            enabled: false
+        }
+    })
+</script>
 
 </body>
 </html>

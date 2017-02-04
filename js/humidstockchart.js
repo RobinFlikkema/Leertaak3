@@ -1,15 +1,14 @@
-var dummystock;
+var humdummystock;
 
-function createstockchart(seriesdata) {
-    var stockchart = Highcharts.stockChart('stockchartcontainer', {
+function createhumstockchart(seriesdata) {
+    var humstockchart = Highcharts.stockChart('humidstockchartcontainer', {
 
         rangeSelector: {
             enabled: false
         },
 
         tooltip: {
-            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}</b><br/>',
-            valueSuffix: ' \u00b0C'
+            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}%</b><br/>',
         },
 
         chart: {
@@ -22,22 +21,15 @@ function createstockchart(seriesdata) {
                         withCredentials: true,
 
                         success: function (data) {
-                            var parsed = updateparse(data);
+                            var parsed = updateparsehum(data);
                             for (var i = 0; i < parsed.length; i++) {
-                                for (var j = 0; j < stockchart.series.length; j++) {
-                                    if (stockchart.series[j].name == parsed[i][0]) {
-                                        // console.debug(stockchart.series[j]['data'][i]);
-                                        // if (stockchart.series[j]['data'][i].y != null) {
-                                        //     if (stockchart.series[j]['data'][i].y != parsed[i][2]) {
-                                        //         console.debug("data is NOT the same");
-                                        //     }
-                                        // }
-                                        stockchart.series[j].addPoint([parsed[i][1], parsed[i][2]], false);
+                                for (var j = 0; j < humstockchart.series.length; j++) {
+                                    if (humstockchart.series[j].name == parsed[i][0]) {
+                                        humstockchart.series[j].addPoint([parsed[i][1], parsed[i][2]], false);
                                     }
                                 }
                             }
-                            stockchart.redraw();
-                            console.debug("updated stockchart");
+                            humstockchart.redraw(false);
                         }
                     });
                     setTimeout(function () {
@@ -69,8 +61,7 @@ function createstockchart(seriesdata) {
 }
 
 $(document).ready(function () {
-    createdummychartstockchart();
-    console.debug(new Date().getTime());
+    createhumdummychartstockchart();
     $.ajax({
         url: 'https://vm.robinflikkema.nl/api/country?name=New+Zealand',
         type: 'get',
@@ -79,22 +70,20 @@ $(document).ready(function () {
 
 
         success: function (data) {
-            console.debug(new Date().getTime());
-            var parsed = setupparse(data);
-            destroydummychartstockchart();
-            createstockchart(parsed);
+            var parsed = setupparsehum(data);
+            destroyhumdummychartstockchart();
+            createhumstockchart(parsed);
         },
 
         complete: function (obj, message) {
             if (message != 'success') {
-                console.debug(message);
             }
         }
     });
 });
 
-var setupparse = function (data) {
-    var temps = [];
+function setupparsehum(data) {
+    var hums = [];
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
             if (key == 'error') {
@@ -105,16 +94,16 @@ var setupparse = function (data) {
                 if (root.hasOwnProperty(key)) {
 
                     var station = root[key];
-                    var temp = []
+                    var hum = []
                     for (var key in station['measurement']) {
                         if (station['measurement'].hasOwnProperty(key)) {
                             var properties = station['measurement'][key];
-                            if (properties['type'] == 'temp') {
-                                temp.push([parseInt(properties['time']) * 1000 + 3600000, parseFloat(properties['value'])]);
+                            if (properties['type'] == 'hum') {
+                                hum.push([parseInt(properties['time']) * 1000 + 3600000, parseFloat(properties['value'])]);
                             }
                         }
                     }
-                    temp.sort(function (a, b) {
+                    hum.sort(function (a, b) {
                         if (a[0] === b[0]) {
                             return 0;
                         }
@@ -125,19 +114,19 @@ var setupparse = function (data) {
 
                     var name = station['name'].toString();
                     name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-                    temps.push({
+                    hums.push({
                         name: name,
-                        data: temp
+                        data: hum
                     });
                 }
             }
         }
     }
-    return temps;
+    return hums;
 };
 
-var updateparse = function (data) {
-    var temp = []
+function updateparsehum(data) {
+    var hum = []
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
             if (key == 'error') {
@@ -152,10 +141,10 @@ var updateparse = function (data) {
                     for (var key in stations['measurement']) {
                         if (stations['measurement'].hasOwnProperty(key)) {
                             var properties = stations['measurement'][key];
-                            if (properties['type'] == 'temp') {
+                            if (properties['type'] == 'hum') {
                                 var name = stations['name'].toString();
                                 name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-                                temp.push([name, parseInt(properties['time']) * 1000, parseFloat(properties['value'])]);
+                                hum.push([name, parseInt(properties['time']) * 1000, parseFloat(properties['value'])]);
                             }
                         }
                     }
@@ -163,11 +152,11 @@ var updateparse = function (data) {
             }
         }
     }
-    return temp;
+    return hum;
 }
 
-var createdummychartstockchart = function () {
-    dummystock = Highcharts.stockChart('stockchartcontainer', {
+var createhumdummychartstockchart = function () {
+    humdummystock = Highcharts.stockChart('humidstockchartcontainer', {
 
         global: {
             useUTC: false,
@@ -196,9 +185,9 @@ var createdummychartstockchart = function () {
     });
 }
 
-var destroydummychartstockchart = function () {
+var destroyhumdummychartstockchart = function () {
     try {
-        dummystock.destroy();
+        humdummystock.destroy();
     } catch (e) {
     }
 }

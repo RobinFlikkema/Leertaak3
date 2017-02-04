@@ -35,17 +35,16 @@ $(document).ready(function () {
                         }
                     }
                 }
-                var sorted = [];
-
-                var values = highestspeeds.map(function (arr) {
-                    if (isFinite(arr[1])) {
-                        return arr[1];
-                    } else {
-                        return 0;
+                for (i = 0; i < highestspeeds.length; i++){
+                    if(!isFinite(highestspeeds[i][1])){
+                        highestspeeds.splice(i,1);
                     }
-                });
-                var max = Math.max(values);
-                createtable(sorted);
+                }
+                highestspeeds.sort(sortFunction);
+                for (i = 0; i < highestspeeds.length; i++){
+                    highestspeeds[i][1] = highestspeeds[i][1] + " km/h";
+                }
+                createtable(highestspeeds);
             }
         });
         setTimeout(function () {
@@ -61,8 +60,7 @@ var createtable = function (tableData) {
     try {
         var previoustable = document.getElementById('currenttable');
         previoustable.parentNode.removeChild(previoustable);
-    } catch (e) {
-    }
+    } catch (e) {}
 
     var tablepanel = document.getElementById("tablecontainer");
     var table = document.createElement('table');
@@ -94,5 +92,14 @@ var createtable = function (tableData) {
 
     table.appendChild(tableBody);
     tablepanel.appendChild(table);
-    console.debug("updated table");
+}
+
+// source: http://stackoverflow.com/a/16097058
+var sortFunction = function (a, b) {
+    if (a[1] === b[1]) {
+        return 0;
+    }
+    else {
+        return (a[1] > b[1]) ? -1 : 1;
+    }
 }

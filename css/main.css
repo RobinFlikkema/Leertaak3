@@ -1,22 +1,4 @@
 .title-text {
     color: white;
-    font-family: 'Lucida Fax', serif;
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    text-align: center;
-    position: relative;
-
-}
-
-table, td, th {
-    text-align: center;
-    background-color: white;
-    border: 1px solid black;
-}
-
-th {
-    font-weight: bolder;
+    font-family: 'Roboto', sans-serif;
 }
