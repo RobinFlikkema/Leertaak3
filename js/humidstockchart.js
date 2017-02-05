@@ -1,5 +1,7 @@
 var humdummystock;
 
+
+//Functions almost exactly the same as tempstockchart except the value that is parced is 'hum' instead of 'temp'
 function createhumstockchart(seriesdata) {
     var humstockchart = Highcharts.stockChart('humidstockchartcontainer', {
 
@@ -9,6 +11,10 @@ function createhumstockchart(seriesdata) {
 
         tooltip: {
             pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}%</b><br/>',
+        },
+
+        scrollbar: {
+            liveRedraw: false
         },
 
         chart: {
@@ -37,6 +43,11 @@ function createhumstockchart(seriesdata) {
                     }, 10000);
                 }
             }
+        },
+
+        yAxis: {
+            min: 0,
+            max: 250
         },
 
         rangeSelector: {
@@ -73,11 +84,6 @@ $(document).ready(function () {
             var parsed = setupparsehum(data);
             destroyhumdummychartstockchart();
             createhumstockchart(parsed);
-        },
-
-        complete: function (obj, message) {
-            if (message != 'success') {
-            }
         }
     });
 });

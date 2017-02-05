@@ -9,6 +9,7 @@ function createchart(seriedata) {
     var categories = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
     // source: http://stackoverflow.com/a/26216564
+    // Creates a polar chart with the data
     currentrose = Highcharts.chart('windrosecontainer', {
 
         series: seriedata,
@@ -18,7 +19,19 @@ function createchart(seriedata) {
             type: 'line'
         },
 
+        pane: {
+            // The chart is sized differently depending on whether the user is on mobile
+          size: (function () {
+              if(!isMobile) {
+                  return '80%';
+              } else {
+                  return '100%';
+              }
+          }())
+        },
+
         tooltip: {
+            // Custom tooltip popup to show more detailed information
             headerFormat: '<span style="color:{point.color}">\u25CF</span>  <b>{series.name}</b><br/>',
             pointFormat: '<b>direction:</b> {point.x:.2f}\u00b0<br/><b>speed:</b> {point.y:.2f} km/h'
         },
@@ -28,7 +41,9 @@ function createchart(seriedata) {
         },
 
         legend: {
+            // Disabled the legend when the user is on mobile because of screen space limitations
             enabled: !isMobile,
+            x: 10,
             align: 'right',
             layout: 'vertical'
         },
@@ -53,6 +68,7 @@ function createchart(seriedata) {
             },
             labels: {
                 formatter: function () {
+                    // Displays the labels on every tick in the chart
                     return this.value;
                 }
             },
@@ -68,6 +84,8 @@ function createchart(seriedata) {
 $(function () {
     createdummywindrose();
     function update() {
+        // Initial AJAX call will get and also parse the data from the API
+
         $.ajax({
                 url: 'https://vm.robinflikkema.nl/api/country?name=New+Zealand',
                 type: 'get',
@@ -86,6 +104,7 @@ $(function () {
                                 if (root.hasOwnProperty(key)) {
                                     var station = root[key];
                                     if (oceanic_stations.indexOf(parseInt(station['id'])) != -1) {
+                                        // Grabs all wind speeds and direction data from the oceanic weather stations.
                                         var totalwind = 0;
                                         var countwind = 0;
                                         var totaldir = 0;
@@ -103,9 +122,11 @@ $(function () {
                                         }
                                     }
 
+                                    // Calculate the average direction and windspeed from each station.
                                     var avgdir = totaldir / countdir;
                                     var avgwind = Math.round((totalwind / countwind) * 100) / 100;
 
+                                    // Capitalize the station name and push the data into a dictionary type that is accepted by Highcharts.
                                     if (Math.round(avgwind) != 0) {
                                         var name = station['name'].toString();
                                         name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
@@ -131,9 +152,10 @@ $(function () {
 
     update();
 })
-;
 
 var createdummywindrose = function () {
+
+    // Create dummy wind rose to show the user that data is being loaded.
     currentrose = Highcharts.chart('windrosecontainer', {
         chart: {
             polar: true,
