@@ -1,0 +1,6 @@
+proc            /proc           proc    defaults          0       0
+/dev/mmcblk0p1  /boot           vfat    defaults          0       2
+/dev/mmcblk0p2  /               ext4    defaults,noatime  0       1
+vm.robinflikkema.nl:/home/csv-storage    /mnt/csv-storage   nfs auto,noatime,bg,nfsvers=3,intr,tcp,actimeo=1800 0 0
+# a swapfile is not a swap partition, no line here
+#   use  dphys-swapfile swap[on|off]  for that

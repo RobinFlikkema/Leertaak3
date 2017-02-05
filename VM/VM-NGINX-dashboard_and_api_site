@@ -1,0 +1,84 @@
+proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=API:10m max_size=1g
+                 inactive=30s use_temp_path=off;
+				 
+server {
+
+	listen 145.33.225.144:443 ssl http2 default_server;
+
+	server_name vm.robinflikkema.nl;
+	server_name www.vm.robinflikkema.nl;
+
+	if ($request_method !~ ^(GET|HEAD|POST|OPTIONS)$) {
+		return 444;
+	}
+
+	ssl_certificate             /etc/nginx/vm.robinflikkema.nl.crt;
+	ssl_certificate_key         /etc/nginx/vm.robinflikkema.nl.key;
+
+	ssl_stapling on;
+	ssl_stapling_verify on;
+
+	client_max_body_size 128m;
+
+	root "/var/www/vm.robinflikkema.nl";
+
+	location /api {
+	
+		auth_sqlite_basic "API";
+		auth_sqlite_basic_database_file  /var/www/login_credentials.db;
+		auth_sqlite_basic_database_table  login;
+		auth_sqlite_basic_table_user_column  username;
+		auth_sqlite_basic_table_passwd_column  password;
+			
+		proxy_pass http://localhost:8080/api;
+		proxy_cache API;
+		proxy_cache_revalidate on;
+		proxy_cache_min_uses 1;
+		proxy_cache_use_stale error timeout updating http_500 http_502 http_503;
+		proxy_cache_lock on;
+		proxy_cache_valid 200 30s;
+	
+	}
+	
+	location ~ \.php(/.*)?$ {
+	
+		auth_sqlite_basic "Dashboard";
+		auth_sqlite_basic_database_file  /var/www/login_credentials.db;
+		auth_sqlite_basic_database_table  login;
+		auth_sqlite_basic_table_user_column  username;
+		auth_sqlite_basic_table_passwd_column  password;
+			
+		fastcgi_split_path_info ^((?U).+\.php)(/?.+)$;
+		fastcgi_param PATH_INFO $fastcgi_path_info;
+		fastcgi_pass "unix:///var/run/php5-fpm.sock";
+		include /etc/nginx/fastcgi.conf;
+	}
+
+	location ~ /$ {
+	
+		auth_sqlite_basic "Dashboard";
+		auth_sqlite_basic_database_file  /var/www/login_credentials.db;
+		auth_sqlite_basic_database_table  login;
+		auth_sqlite_basic_table_user_column  username;
+		auth_sqlite_basic_table_passwd_column  password;
+			
+		index index.html index.cgi index.pl index.php index.xhtml index.htm index.shtml;
+	}
+	
+	location ~* \.(?:jpg|jpeg|gif|png|ico|svg|css|js)$ {
+	
+		expires 1M;
+		access_log off;
+		add_header Cache-Control "public";
+	}
+}
+
+server {
+
+	listen 145.33.225.144:80 default_server;
+
+	server_name vm.robinflikkema.nl;
+	server_name www.vm.robinflikkema.nl;
+
+	return 301 https://$host$request_uri;
+}
