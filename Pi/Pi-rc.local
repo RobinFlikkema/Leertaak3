@@ -17,6 +17,6 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-/usr/bin/java -server -XX:+AggressiveHeap -Xms750m -Xmx750m -jar /root/Leertaak3.jar
+/usr/bin/nohup /usr/bin/java -server -XX:+AggressiveHeap -Xms750m -Xmx750m -jar /root/Leertaak3.jar &
 
 exit 0
