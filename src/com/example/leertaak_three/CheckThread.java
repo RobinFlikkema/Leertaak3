@@ -9,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 class CheckThread implements Runnable {
     private final BlockingQueue<Measurement> checkQueue;
     private final BlockingQueue<Measurement> storeQueue;
-    private Station[] stations;
+    private static Station[] stations;
 
     CheckThread(BlockingQueue<Measurement> checkQueue, BlockingQueue<Measurement> storeQueue, Station[] stations) {
         this.checkQueue = checkQueue;

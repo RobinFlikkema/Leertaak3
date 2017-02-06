@@ -1,8 +1,5 @@
 package com.example.leertaak_three;
 
-import jdk.nashorn.internal.ir.Block;
-import sun.security.provider.NativePRNG;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;

@@ -52,11 +52,7 @@ class Station {
     boolean isTemperaturePlausible(double temperature) {
         if (this.measurements.size() > 1 && (temperature < -5 || temperature > 5)) {
             calculateExtrapolatedTemperature();
-            if (((getExtrapolatedTemperature() * 1.20) > temperature) && (temperature < (getExtrapolatedTemperature() * 0.80))){
-                return true;
-            } else {
-                return false;
-            }
+            return ((getExtrapolatedTemperature() * 1.20) > temperature) && (temperature < (getExtrapolatedTemperature() * 0.80));
         } else {
             return true;
         }
