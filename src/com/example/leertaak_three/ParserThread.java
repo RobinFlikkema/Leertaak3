@@ -5,13 +5,23 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by Robin on 8-12-2016.
+ * This is our Parser.
+ *
+ * @author Robin Flikkema
+ *
+ * TODO: Refactor and rename ReceiveWeatherdata() (<- it doesn't even do what is says :D)
+ * TODO: Refactor variable names
  */
 class ParserThread implements Runnable {
     private final BlockingQueue<ArrayList<String>> incomingQueue;
     private final BlockingQueue<Measurement> outgoingQueue;
     private final AtomicInteger counter;
 
+    /**
+     * @param queue , a Queue containing Measurements ready to be Checked by the CheckThread
+     * @param counter , a counter which counts the amount of Weatherdata Objects parsed.
+     * @param incomingQueue , the incoming Queue of Lists of Strings (containing the Weatherdata)
+     */
     ParserThread(BlockingQueue<Measurement> queue, AtomicInteger counter, BlockingQueue<ArrayList<String>> incomingQueue) {
         this.incomingQueue = incomingQueue;
         this.outgoingQueue = queue;
@@ -25,7 +35,10 @@ class ParserThread implements Runnable {
         }
     }
 
-    // TODO: Needs refactoring
+    /**
+     * This function parses the Weatherdata. It counts the amount of lines done, the split the Measurements on the right
+     * moment.
+     */
     private void receiveWeatherdata() {
         try {
             if (incomingQueue.size() > 100) {
