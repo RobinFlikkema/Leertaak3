@@ -6,7 +6,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by Robin on 15-12-2016.
+ * This Thread prints information about Queue sizes periodically.
+ * This <b>SHOULDN'T</b> be used in production
+ *
+ * @author Robin Flikkema
  */
 class QueueWatcher implements Runnable {
     private final BlockingQueue<Measurement> processingQueue;
