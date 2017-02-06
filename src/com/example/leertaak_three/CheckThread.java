@@ -14,7 +14,7 @@ class CheckThread implements Runnable {
     CheckThread(BlockingQueue<Measurement> checkQueue, BlockingQueue<Measurement> storeQueue, Station[] stations) {
         this.checkQueue = checkQueue;
         this.storeQueue = storeQueue;
-        this.stations = stations;
+        CheckThread.stations = stations;
     }
 
     @Override public void run() {
