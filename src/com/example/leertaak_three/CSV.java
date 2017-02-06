@@ -5,11 +5,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This class can be used to store Measurements into a CSV. We chose to make this a seperate class so that it can be
+ * easily exchanged with something else like MySQL for example.
+ *
+ * @author Robin Flikkema
+ */
 class CSV {
 
     CSV() {
     }
 
+    /**
+     * This function inserts Measurements. Since the machines we use to develop this application run Windows and the
+     * production server runs Linux we make a simple check to make sure the files got stored in the right place while
+     * developing.
+     * The name of the CSV will be yyyy-MM-dd, representing the current date
+     *
+     * @param measurements , A List of Measurements which need to be inserted into the CSV
+     */
     void insertMeasurements(ArrayList<Measurement> measurements) {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String fileLocation;
