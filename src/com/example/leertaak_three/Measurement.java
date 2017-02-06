@@ -16,6 +16,10 @@ class Measurement {
     Measurement() {
     }
 
+    /**
+     * This function adds lines to the Measurement.
+     * @param line , the line to be added
+     */
     void addValue(String line) {
         line = stripTags(line, this.lineCounter);
 
@@ -27,14 +31,25 @@ class Measurement {
         this.lineCounter++;
     }
 
+    /**
+     * @return the station number of the Measurement
+     */
     int getStationNumber() {
         return Integer.valueOf(this.getValue(0));
     }
 
+    /**
+     * @return the Temperate of the Measurement
+     */
     double getTemperature() {
         return Double.valueOf(this.getValue(3));
     }
 
+    /**
+     * @param pos the position of the value to be returned
+     *
+     * @return the value on the given position
+     */
     private String getValue(int pos) {
         return this.values[pos];
     }
@@ -86,26 +101,34 @@ class Measurement {
                 values[11].charAt(5);
     }
 
+    /**
+     * @param pos the position of the value to be returned
+     *
+     * @return the value on the given position
+     */
     double getValueAsDouble(int pos) {
         return Double.valueOf(this.values[pos]);
     }
 
+    /**
+     * @param pos the position of the value to be set
+     * @param value the value, that needs to be set
+     */
     void setValue(int pos, String value) {
         values[pos] = value;
     }
 
-    // TODO: Are we even using this?
     public String toString() {
         return Arrays.toString(values);
     }
 
     /**
-     * stripTags
+     * This functions strips the tags of a String
      *
-     * @param input
-     * @param position
+     * @param input the line containing XML Tags
+     * @param position the rowcount of the line
      *
-     * @return
+     * @return , stripped line
      */
     private String stripTags(String input, int position) {
         String output = null;
@@ -136,6 +159,9 @@ class Measurement {
         return output;
     }
 
+    /**
+     * @return the position of the missing Value, or -1 when no value is missing.
+     */
     int valueIsMissing() {
         int index = 0;
         for (String value : values) {
