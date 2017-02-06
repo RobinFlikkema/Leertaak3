@@ -16,7 +16,6 @@ class Measurement {
     Measurement() {
     }
 
-    // TODO: We can probably refactor this to be in a seperate Parser thingy
     void addValue(String line) {
         line = stripTags(line, this.lineCounter);
 

@@ -31,7 +31,9 @@ class WeatherdataService {
 
         // This Station Array is used to hold all Stations. This is later used to calculate missing values.
         Station[] stationList = new Station[1000000];
-        Arrays.fill(stationList, new Station());
+        for (int i = 0; i < 1000000; i++){
+            stationList[i] = new Station();
+        }
         // Receiver Threads
         ExecutorService receiverThreadPool = Executors.newCachedThreadPool();
         // Parser Threads
@@ -43,7 +45,7 @@ class WeatherdataService {
         // Store Thread
         ExecutorService storeThreadPool = Executors.newFixedThreadPool(2);
         storeThreadPool.submit(new StoreThread(storeQueue));
-        // Queue Watcher Thread
+        // Queue Watcher Thread (which we aren't using at the moment)
         //ScheduledExecutorService queueWatcherPool = Executors.newScheduledThreadPool(1);
         //queueWatcherPool.scheduleAtFixedRate(new QueueWatcher(checkQueue, incomingQueue, storeQueue, parseCounter), 0, 10, TimeUnit.SECONDS);
 

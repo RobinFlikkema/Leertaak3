@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Robin on 21-12-2016.
  */
 class Station {
-    private final ArrayList<Measurement> measurements = new ArrayList<>();
+    private ArrayList<Measurement> measurements = new ArrayList<>();
     private double extrapolatedTemperature;
 
     Station() {
@@ -14,22 +14,23 @@ class Station {
     }
 
     void addMeasurement(Measurement measurement) {
-        if (measurements.size() >= 30) {
-            measurements.remove(0);
+        if (this.measurements.size() >= 30) {
+            this.measurements.remove(0);
         }
-        measurements.add(measurement);
+        this.measurements.add(measurement);
     }
 
     private void calculateExtrapolatedTemperature() {
-        if (measurements.size() > 1) {
+        if (this.measurements.size() > 1) {
             double totalTemperature = 0.0;
-            for (Measurement measurement : measurements) {
+            for (Measurement measurement : this.measurements) {
                 totalTemperature += measurement.getTemperature();
             }
-            double averageTemperature = totalTemperature / measurements.size();
+            double averageTemperature = totalTemperature / this.measurements.size();
             this.extrapolatedTemperature = Math.round(averageTemperature);
+        } else {
+            this.extrapolatedTemperature = 0.0;
         }
-        this.extrapolatedTemperature = 0.0;
     }
 
     double getExtrapolatedTemperature() {
@@ -37,19 +38,27 @@ class Station {
     }
 
     double getExtrapolatedValue(int pos) {
-            if (measurements.size() > 1) {
-                double total = 0.0;
-                for (Measurement measurement : measurements) {
-                    total += measurement.getValueAsDouble(pos);
-                }
-                double average = total / measurements.size();
-                return Math.round(average);
+        if (this.measurements.size() > 1) {
+            double total = 0.0;
+            for (Measurement measurement : this.measurements) {
+                total += measurement.getValueAsDouble(pos);
             }
+            double average = total / this.measurements.size();
+            return Math.round(average);
+        }
         return 0.0;
     }
 
     boolean isTemperaturePlausible(double temperature) {
-        calculateExtrapolatedTemperature();
-        return (getExtrapolatedTemperature() * 1.20) < temperature && temperature > (getExtrapolatedTemperature() * 0.80);
+        if (this.measurements.size() > 1 && (temperature < -5 || temperature > 5)) {
+            calculateExtrapolatedTemperature();
+            if (((getExtrapolatedTemperature() * 1.20) > temperature) && (temperature < (getExtrapolatedTemperature() * 0.80))){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 }
